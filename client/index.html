@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Space Concordia Wars</title>
+
+    <!-- Sets initial viewport load and disables zooming  -->
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+
+    <!-- Makes your prototype chrome-less once bookmarked to your phone's home screen -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <!-- Include the compiled Ratchet CSS -->
+    <link href="lib/ratchet/css/ratchet.css" rel="stylesheet">
+
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+
+    <!-- Include the compiled Ratchet JS -->
+    <script src="lib/ratchet/js/ratchet.js"></script>
+    <script src="lib/dom.js"></script>
+    <script src="components/join-game.js"></script>    
+    <script src="components/start-server.js"></script>
+    <script>
+        Dom.ready(function() {
+            var joinGameComponent = new JoinGame({ button: '#join-game'});            
+            var startServerComponent = new StartServer({ button: '#start-server'});
+
+            var socket = io.connect('/');
+        });
+    </script>
+
+
+  </head>
+  <body>
+
+    <!-- Make sure all your bars are the first things in your <body> -->
+    <header class="bar bar-nav">
+      <h1 class="title">Space Concordia Wars</h1>
+    </header>
+    
+    <div class="content">    
+        <input type="text" placeholder="Nickname">                 
+        <button id='start-server' class="btn btn-primary btn-block">Start Server</button>
+        
+        <input type="text" placeholder="Game ID"> 
+        <button id='join-game' class="btn btn-positive btn-block">Join Game</button>
+        
+        
+        <div class="card">
+            <ul class="table-view">
+                <li class="table-view-cell table-view-divider">Connected:</li>
+                <li class="table-view-cell">Player 1</li>
+                <li class="table-view-cell">Player 2</li>            
+                <li class="table-view-cell">Player 3</li>
+                <li class="table-view-cell">Player 4</li>
+            </ul>
+        </div>            
+    </div>
+
+  </body>
+</html>

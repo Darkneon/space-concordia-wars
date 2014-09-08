@@ -1,0 +1,42 @@
+body { 
+	margin: 0; 
+	overflow: hidden; 
+	background-color: #000;
+}
+
+#theGame {
+	width: 900px;
+	height: 600px;
+	margin: 0 auto;
+	//border: 1px solid #FFA824;
+}
+
+#title {
+	margin: 0 auto;
+	text-align: center;
+	width: 900px;
+	height: 60px;
+	margin-top: 30px;
+	color: #FFA824;
+	font-size: 40px;
+	font-family: 'Press Start 2P', 'cursive';
+}
+
+#text {
+	margin: 0 auto;
+	text-align: center;
+	width: 900px;
+	color: #444;
+	font-size: 12px;
+	font-family: Sans-serif;
+	margin-top: 12px;
+}
+
+a {
+	color: #666;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #aaa;
+}

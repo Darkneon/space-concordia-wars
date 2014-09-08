@@ -1,0 +1,15 @@
+{
+  "name": "space-concordia-wars",
+  "version": "0.0.1",
+  "description": "Team Building Game",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+      "express": "4.8.8",
+      "socket.io": "1.1.0"
+  },
+  "author": "",
+  "license": "MIT"
+}
