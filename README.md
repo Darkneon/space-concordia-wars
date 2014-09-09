@@ -3,7 +3,7 @@ space-concordia-wars
 
 A team building game
 
-** Setup
+**Setup
 ```
-ln -s client/ server/client
+cd server/ && ln -s ../client client
 ```
