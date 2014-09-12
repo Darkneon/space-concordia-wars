@@ -21,12 +21,12 @@
     <script src="lib/dom.js"></script>     
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="components/join-game.js"></script>    
-    <script src="components/start-server.js"></script>
+    <script src="components/new-room.js"></script>
     <script>
          
         $(document).ready(function() {
-         var joinGameComponent = new JoinGame({ button: '#join-game', modalContent: '#modal'});              
-            var startServerComponent = new StartServer({ button: '#start-server'});
+            var joinGameComponent = new JoinGame({ button: '#join-game', modalContent: '#modal'});              
+            var newRoomrComponent = new NewRoom({ button: '#newRoom'});
 
             var socket = io.connect('/');
         });
@@ -55,7 +55,7 @@
       
     <div class="content">            
         <input type="text" placeholder="Nickname">                 
-        <button id='start-server' class="btn btn-primary btn-block">New Room</button>                
+        <button id='newRoom' class="btn btn-primary btn-block">New Room</button>                
         <a href="#modal" id='join-game' class="btn btn-positive btn-block">Join Room</a>
         
         
