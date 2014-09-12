@@ -17,13 +17,15 @@
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 
     <!-- Include the compiled Ratchet JS -->
-    <script src="lib/ratchet/js/ratchet.js"></script>
-    <script src="lib/dom.js"></script>
+    <script src="lib/ratchet/js/ratchet.js"></script>      
+    <script src="lib/dom.js"></script>     
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="components/join-game.js"></script>    
     <script src="components/start-server.js"></script>
     <script>
-        Dom.ready(function() {
-            var joinGameComponent = new JoinGame({ button: '#join-game'});            
+         
+        $(document).ready(function() {
+         var joinGameComponent = new JoinGame({ button: '#join-game', modalContent: '#modal'});              
             var startServerComponent = new StartServer({ button: '#start-server'});
 
             var socket = io.connect('/');
@@ -35,16 +37,26 @@
   <body>
 
     <!-- Make sure all your bars are the first things in your <body> -->
+
+      
     <header class="bar bar-nav">
       <h1 class="title">Space Concordia Wars</h1>
     </header>
     
-    <div class="content">    
-        <input type="text" placeholder="Nickname">                 
-        <button id='start-server' class="btn btn-primary btn-block">Start Server</button>
+    <div id="modal" class="modal">
+        <header class="bar bar-nav">       
+            <a class="icon icon-close pull-right" href="#modal"></a>
+            <h1 class="title"></h1>
+        </header>
         
-        <input type="text" placeholder="Game ID"> 
-        <button id='join-game' class="btn btn-positive btn-block">Join Game</button>
+        <div class="content">            
+        </div>
+    </div>      
+      
+    <div class="content">            
+        <input type="text" placeholder="Nickname">                 
+        <button id='start-server' class="btn btn-primary btn-block">New Room</button>                
+        <a href="#modal" id='join-game' class="btn btn-positive btn-block">Join Room</a>
         
         
         <div class="card">
