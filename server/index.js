@@ -20,31 +20,31 @@ function Player(){
 }
 */
 
-function Room(id){
+function Room(id) {
     this.id = id;
-    this.password = "";
-    this.passwordEnabled = false;
-    this.roomCapacity = 2;
+    this.password = ""; //remove
+    this.passwordEnabled = false; //remove
+    this.roomCapacity = 8;
     this.players = [];
 }
 
 //Perhaps create a prototype of room and pull up these methods
-Room.prototype.addPlayer = function(playerID){
-    if(this.players.length < this.roomCapacity){
-        this.players.append(playerID);
+Room.prototype.addPlayer = function (playerID) {
+    if (this.players.length < this.roomCapacity) {
+        this.players.push(playerID);
         return true;
     }
     return false;
-}
+};
 
-Room.prototype.removePlayer = function(playerID){
-    var index = this.players.indexOf(playerID)
-    if(index > -1){
+Room.prototype.removePlayer = function (playerID) {
+    var index = this.players.indexOf(playerID);
+    if (index > -1) {
         this.players.splice(index, 1);
         return true;
     }
     return false;
-}
+};
 
 var app = express();
 
@@ -52,17 +52,17 @@ app.use(express.static(__dirname + '/client'));
 app.use(bodyParser.urlencoded());
 
 app.get('/', function (req, res) {
-    res.sendFile( __dirname + '/client/index.html' );
+    res.sendFile(__dirname + '/client/index.html');
 });
 
 app.post('/newRoom', function (req, res) {
     id += 1; //temp
     rooms[id] = new Room(id);
-    rooms[id].addPlayer(client.id);
-    res.send(id);
+    rooms[id].addPlayer(req.params.id);
+    res.end(JSON.stringify(id));
 });
 
-var server = app.listen(3000, function() {
+var server = app.listen(3000, function () {
     console.log('And we are live on port %d', server.address().port);
 });
 
