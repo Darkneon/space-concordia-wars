@@ -1,7 +1,7 @@
 /*jslint node: true */
 //List game rooms
-//music
 //new room
+//music
 
 "use strict";
 
@@ -55,8 +55,15 @@ app.post('/newRoom', function (req, res) {
     id += 1; //temp
     rooms[id] = new Room(id);
     rooms[id].addPlayer(req.params.id);
-    res.end(JSON.stringify(id));
+    //res.end(JSON.stringify(id));
+    io.sockets.broadcast('refresh', JSON.stringify(rooms));
 });
+
+app.post('/joinRoom', function(req, res) {
+    var roomID = req.params.id
+}
+//join room
+//list rooms
 
 var server = app.listen(3000, function () {
     console.log('And we are live on port %d', server.address().port);
