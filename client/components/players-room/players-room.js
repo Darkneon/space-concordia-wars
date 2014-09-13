@@ -21,13 +21,12 @@
         }.bind(this));
         
         this._socket.on('playerJoined', this.onPlayerJoin.bind(this)); 
-        this._socket.on('roomChanged', this.onRoomChanged.bind(this));
-        
+        this._socket.on('roomChanged', this.onRoomChanged.bind(this));        
     }
 
-     PlayersRoom.prototype.onChangeTeamClick = function() { 
+    PlayersRoom.prototype.onChangeTeamClick = function() { 
         this._socket.emit('changeTeam');
-     }
+    }
      
     PlayersRoom.prototype.onPlayerJoin = function(data) { 
         console.log('onPlayerJoin called');
@@ -44,7 +43,6 @@
             $('#' + player.team + '-team').after(Mark.up(this._templates[template], player));
         }, this);        
     }
-       
             
     window.PlayersRoom = PlayersRoom;
 })(window);

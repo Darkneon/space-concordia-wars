@@ -27,6 +27,7 @@
     <script src="components/new-room.js"></script>
     <script src="components/players-room/players-room.js"></script>
     <script src="games/iridescence/iridescence.js"></script>    
+    <script src="games/mehdi-sez/mehdi-sez.js"></script>    
     <script>
          
         $(document).ready(function() {
@@ -44,18 +45,18 @@
                 elements: {
                     content: '#players-room'
                 }
-            });
-
-            
-            
-            socket.on('teamChanged', function(result) {
-                console.log(result);
-            });
+            });                                    
             
             $('#game1').on('click', function() {
                 $('body').html('<div id="theGame"></div>');
                 var iridescence = new Iridescence({ path: '/games/iridescence'});
-            });                                
+            });
+            
+            $('#game2').on('click', function() {
+                $('body').html('<div id="theGame"></div>');
+                var m = new MehdiSez({ path: '/games/mehdi-sez'});
+            });      
+            
         });
     </script>
   </head>
@@ -82,6 +83,7 @@
         <button id='newRoom' class="btn btn-primary btn-block">New Room</button>                
         <a href="#modal" id='join-game' class="btn btn-positive btn-block">Join Room</a>
         <a id='game1' class="btn btn-positive btn-block">Test Game #1</a>
+        <a id='game2' class="btn btn-positive btn-block">Test Game #2</a>
         
         <div id='players-room' class="card"></div>            
     </div>
