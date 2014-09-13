@@ -20,10 +20,12 @@
     <script src="lib/ratchet/js/ratchet.js"></script>      
     <script src="lib/dom.js"></script>     
     <script src="lib/phaser.js"></script>
+    <script src="lib/markup.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="components/join-game.js"></script>    
     <script src="components/new-room.js"></script>
     <script src="games/iridescence/iridescence.js"></script>
+    <script type="text" src="templates/connected-player.mark"></script>
     <script>
          
         $(document).ready(function() {
@@ -35,6 +37,14 @@
             $('#game1').on('click', function() {
                 $('body').html('<div id="theGame"></div>');
                 var iridescence = new Iridescence({ path: '/games/iridescence'});
+            });
+            
+            $.get('/templates/connected-player.mark', function(template) {
+                var data = {
+                    name: 'player 1'
+                };
+                
+                $(Mark.up(template, data)).insertAfter('#red-team');
             });
         });
     </script>
@@ -65,11 +75,8 @@
         
         <div class="card">
             <ul class="table-view">
-                <li class="table-view-cell table-view-divider">Connected:</li>
-                <li class="table-view-cell">Player 1</li>
-                <li class="table-view-cell">Player 2</li>            
-                <li class="table-view-cell">Player 3</li>
-                <li class="table-view-cell">Player 4</li>
+                <li id="red-team" class="table-view-cell table-view-divider">Red Team:</li>                    
+                <li id="blue-team" class="table-view-cell table-view-divider">Blue Team:</li>                
             </ul>
         </div>            
     </div>
