@@ -1,11 +1,9 @@
 /*jslint node: true */
-"use strict";
+//List game rooms
+//music
+//new room
 
-/*Goal for today:
-Make a pull request for:
-1. Someone starting a server (post)
-2. Someone requesting a list of games available (get)
-*/
+"use strict";
 
 var express  = require('express');
 var socketio = require('socket.io');
@@ -15,15 +13,9 @@ var bodyParser = require('body-parser');
 var id = 0;
 var rooms = [];
 
-/*
-function Player(){
-}
-*/
 
 function Room(id) {
     this.id = id;
-    this.password = ""; //remove
-    this.passwordEnabled = false; //remove
     this.roomCapacity = 8;
     this.players = [];
 }
@@ -55,6 +47,10 @@ app.get('/', function (req, res) {
     res.sendFile(__dirname + '/client/index.html');
 });
 
+app.get('/getRooms', function (req, res) {
+    res.end(JSON.stringify(rooms));
+});
+
 app.post('/newRoom', function (req, res) {
     id += 1; //temp
     rooms[id] = new Room(id);
@@ -71,3 +67,4 @@ var io = socketio.listen(server);
 io.sockets.on('connection', function (socket) {
     console.log('A socket connected!');
 });
+
