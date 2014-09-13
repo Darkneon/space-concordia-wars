@@ -3,7 +3,8 @@
     var NewRoom = function(options) {                
         this._$contentElement = $(options.elements.content);           
         this._$nickname = $(options.elements.nickname);
-                
+        this._onNewRoomCreated = options.onNewRoomCreated;
+        
         $.get(options.path + '/templates/new-room-form.mark', function(template) {                                
             this._$contentElement.append(template);            
         }.bind(this));            
@@ -26,7 +27,7 @@
         
         $.post('/newRoom', data, function(result) {
             that._$contentElement.hide();
-            console.log(result);
+            that._onNewRoomCreated(result, that._$nickname.val());
         }, 'json')
         .fail(function() {
             console.error('start-server');

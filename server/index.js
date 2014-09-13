@@ -80,13 +80,18 @@ app.get('/getRooms', function (req, res) {
     res.end(JSON.stringify(rooms));
 });
 
+app.get('/getRoom/:id', function (req, res) {
+    res.json(rooms[req.params.id]);
+});
+
+
 app.post('/newRoom', function (req, res) {    
     id += 1; //temp
     rooms[id] = new Room(id);
     rooms[id].addPlayer(req.body.nickname);
     res.end(JSON.stringify(id));
     updateGameList();
-    io.sockets.emit('roomChanged', rooms[id].players);
+   // io.sockets.emit('roomChanged', rooms[id].players);
 });
 
 app.post('/joinRoom', function (req, res) {

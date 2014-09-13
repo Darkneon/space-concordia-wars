@@ -1,7 +1,7 @@
 (function(window) {        
     var PlayersRoom = function(options) {                           
         this._templates = {};
-        this._nickname = 'Me';
+        this._nickname = options.nickname;
         this._$contentElement = $(options.elements.content);
         this._socket = options.socket;
         
@@ -11,15 +11,16 @@
         }.bind(this));
       
         $.get(options.path + '/templates/current-player.mark', function(template) {                    
-            this._templates['current-player'] = template;                                
+            this._templates['current-player'] = template;             
         }.bind(this));
         
         $.get(options.path + '/templates/player.mark', function(template) {        
             this._templates['player'] = template;            
+            this.onRoomChanged(options.players);
         }.bind(this));
         
         this._socket.on('playerJoined', this.onPlayerJoin.bind(this)); 
-        this._socket.on('roomChanged', this.onRoomChanged.bind(this));        
+        this._socket.on('roomChanged', this.onRoomChanged.bind(this));                 
     }
 
     PlayersRoom.prototype.onChangeTeamClick = function() { 

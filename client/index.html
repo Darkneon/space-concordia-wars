@@ -33,27 +33,32 @@
         $(document).ready(function() {
             var socket = io.connect('/');
             
-            var newRoomrComponent = new NewRoom({
+            var newRoomComponent = new NewRoom({
                 path: '/components/new-room', 
                 elements: { 
                     content: '#new-room', 
                     nickname: '#nickname'
-                } 
+                },
+                onNewRoomCreated: function(roomID, nickname) {
+                    $.get('/getRoom/' + roomID, {}, function(result) {
+                        $('#join-game').hide();
+                        var playersRoomComponent = new PlayersRoom({
+                            socket: socket, 
+                            path: '/components/players-room',
+                            nickname: nickname,
+                            players: result.players,
+                            elements: {
+                                content: '#players-room'
+                            }
+                        });
+                    }, 'json');
+                }
+                
             });
             
             var joinGameComponent = new JoinGame({ button: '#join-game', modalContent: '#modal'});                          
             
-            var playersRoomComponent = new PlayersRoom({
-                socket: socket, 
-                path: '/components/players-room',
-                currentPlayer: {
-                    name: 'Me',
-                    team: 'red'
-                },
-                elements: {
-                    content: '#players-room'
-                }
-            });                                    
+            
             
             $('#game1').on('click', function() {
                 $('body').html('<div id="theGame"></div>');
