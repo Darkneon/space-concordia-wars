@@ -23,9 +23,10 @@ function Room(id) {
     //maybe add a gamestatus enum
 }
 
-function Player(nick) {
-    this.id = nick;
-    this.team = "";
+function Player(nickname) {
+    this.id = nickname;
+    this.nickname = nickname
+    this.team = 'red';
     this.score = -1;
 }
 
@@ -38,14 +39,20 @@ Player.prototype.switchTeams = function () {
     this.team = this.team === "red" ? "blue" : "red";
 };
 
-function updateGameList() {
-    io.sockets.broadcast('refresh', JSON.stringify(rooms));
+function updateGameList() {    
+    console.log(rooms);
+    io.sockets.emit(
+        'refresh', 
+        JSON.stringify(rooms.filter(function(room) {
+            return room.players.length < room.roomCapacity; 
+        }))
+    );
 }
 
 //Perhaps create a prototype of room and pull up these methods
 Room.prototype.addPlayer = function (playerID) {
     if (this.players.length < this.roomCapacity) {
-        this.players.push(playerID);
+        this.players.push(new Player(playerID));
         return true;
     }
     return false;
@@ -73,12 +80,13 @@ app.get('/getRooms', function (req, res) {
     res.end(JSON.stringify(rooms));
 });
 
-app.post('/newRoom', function (req, res) {
+app.post('/newRoom', function (req, res) {    
     id += 1; //temp
     rooms[id] = new Room(id);
-    rooms[id].addPlayer(req.params.id);
+    rooms[id].addPlayer(req.body.nickname);
     res.end(JSON.stringify(id));
     updateGameList();
+    io.sockets.emit('roomChanged', rooms[id].players);
 });
 
 app.post('/joinRoom', function (req, res) {
@@ -88,7 +96,8 @@ app.post('/joinRoom', function (req, res) {
         if (rooms[roomID].players.length < rooms[roomID].roomCapacity) {
             rooms[roomID].players.push(req.params.playerID);
             res.end("ok"); //do we need code numbers for errors?
-            updateGameList();
+            updateGameList();   
+            
         } else {
             res.end(JSON.stringify({error: "Room is full"}));
         }

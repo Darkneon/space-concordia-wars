@@ -1,1 +1,1 @@
-<li class="table-view-cell">{{name}}</li>
+<li class="table-view-cell">{{nickname}}</li>

@@ -1,0 +1,3 @@
+<form id='new-room-form'>         
+    <button id='new-room-btn' class="btn btn-primary btn-block">New Room</button>       
+</form>    

@@ -11,9 +11,7 @@
         }.bind(this));
       
         $.get(options.path + '/templates/current-player.mark', function(template) {                    
-            this._templates['current-player'] = template;        
-            $('#' + options.currentPlayer.team + '-team').after(Mark.up(template, options.currentPlayer));
-            this._$contentElement.on('click', '#change-team-btn', this.onChangeTeamClick.bind(this));                       
+            this._templates['current-player'] = template;                                
         }.bind(this));
         
         $.get(options.path + '/templates/player.mark', function(template) {        
@@ -36,10 +34,9 @@
     PlayersRoom.prototype.onRoomChanged = function(data) {
         console.log('roomChanged called');
         this._$contentElement.empty();
-        this._$contentElement.append(this._templates['room']);
-        
-        data.players.forEach(function(player) {
-            var template = player.name === this._nickname ? 'current-player' : 'player';
+        this._$contentElement.append(this._templates['room']);        
+        data.forEach(function(player) {
+            var template = player.nickname === this._nickname ? 'current-player' : 'player';
             $('#' + player.team + '-team').after(Mark.up(this._templates[template], player));
         }, this);        
     }

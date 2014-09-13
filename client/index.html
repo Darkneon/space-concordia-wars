@@ -24,7 +24,7 @@
     <script src="lib/markup.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="components/join-game.js"></script>    
-    <script src="components/new-room.js"></script>
+    <script src="components/new-room/new-room.js"></script>
     <script src="components/players-room/players-room.js"></script>
     <script src="games/iridescence/iridescence.js"></script>    
     <script src="games/mehdi-sez/mehdi-sez.js"></script>    
@@ -33,8 +33,16 @@
         $(document).ready(function() {
             var socket = io.connect('/');
             
-            var joinGameComponent = new JoinGame({ button: '#join-game', modalContent: '#modal'});              
-            var newRoomrComponent = new NewRoom({ button: '#newRoom'});
+            var newRoomrComponent = new NewRoom({
+                path: '/components/new-room', 
+                elements: { 
+                    content: '#new-room', 
+                    nickname: '#nickname'
+                } 
+            });
+            
+            var joinGameComponent = new JoinGame({ button: '#join-game', modalContent: '#modal'});                          
+            
             var playersRoomComponent = new PlayersRoom({
                 socket: socket, 
                 path: '/components/players-room',
@@ -79,8 +87,8 @@
     </div>      
       
     <div class="content">            
-        <input type="text" placeholder="Nickname">                 
-        <button id='newRoom' class="btn btn-primary btn-block">New Room</button>                
+        <input id='nickname' type="text" placeholder="Nickname" />        
+        <div id='new-room'></div>                
         <a href="#modal" id='join-game' class="btn btn-positive btn-block">Join Room</a>
         <a id='game1' class="btn btn-positive btn-block">Test Game #1</a>
         <a id='game2' class="btn btn-positive btn-block">Test Game #2</a>
