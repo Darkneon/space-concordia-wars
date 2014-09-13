@@ -2,22 +2,44 @@
 //List game rooms
 //new room
 //music
+//nick handling
 
 "use strict";
 
+var PORT = 3000;
 var express  = require('express');
 var socketio = require('socket.io');
 var bodyParser = require('body-parser');
-//var uuid = require('node-uuid');
 
 var id = 0;
 var rooms = [];
+//var players = [];
 
 
 function Room(id) {
     this.id = id;
     this.roomCapacity = 8;
     this.players = [];
+    //maybe add a gamestatus enum
+}
+
+function Player(nick) {
+    this.id = nick;
+    this.team = "";
+    this.score = -1;
+}
+
+Player.prototype.reset = function () {
+    this.team = "";
+    this.score = -1;
+};
+
+Player.prototype.switchTeams = function () {
+    this.team = this.team === "red" ? "blue" : "red";
+};
+
+function updateGameList() {
+    io.sockets.broadcast('refresh', JSON.stringify(rooms));
 }
 
 //Perhaps create a prototype of room and pull up these methods
@@ -55,43 +77,56 @@ app.post('/newRoom', function (req, res) {
     id += 1; //temp
     rooms[id] = new Room(id);
     rooms[id].addPlayer(req.params.id);
-    //res.end(JSON.stringify(id));
-    io.sockets.broadcast('refresh', JSON.stringify(rooms));
+    res.end(JSON.stringify(id));
+    updateGameList();
 });
 
-app.post('/joinRoom', function(req, res) {
-    var roomID = req.params.id
-}
-//join room
-//list rooms
+app.post('/joinRoom', function (req, res) {
+    var roomID = req.params.roomID;
+    
+    if (rooms.indexOf(roomID) > -1) {
+        if (rooms[roomID].players.length < rooms[roomID].roomCapacity) {
+            rooms[roomID].players.push(req.params.playerID);
+            res.end("ok"); //do we need code numbers for errors?
+            updateGameList();
+        } else {
+            res.end(JSON.stringify({error: "Room is full"}));
+        }
+    } else {
+        res.end(JSON.stringify({error: "Room not found"}));
+    }
+});
 
-var server = app.listen(3000, function () {
+var server = app.listen(PORT, function () {
     console.log('And we are live on port %d', server.address().port);
 });
 
 var io = socketio.listen(server);
 
 io.sockets.on('connection', function (socket) {
-<<<<<<< HEAD
-    console.log('A socket connected!');
-});
-
-=======
     console.log('A socket connected!');        
     
+    /*
     setTimeout(function() {
         console.log('playerJoined emitted');
         socket.emit('playerJoined', { name: 'New player', team : 'blue' });
     }, 100);
+    */
     
-    socket.on('changeTeam', function(msg) {
+    socket.on('changeTeam', function (msg) {
         console.log('changeTeam called');
-        socket.emit('roomChanged', { 
-            players: [
-                { name: 'Me', team: 'blue' },
-                { name: 'New player', team: 'blue' }
-            ]
-        });
+        var roomID = msg; //?
+        var playerID = msg; //?
+        if (rooms.indexOf[roomID] <= -1) {
+  //          socket
+            socket.send(JSON.stringify({error: "Room not found"}));
+        }
+        
+        if (rooms[roomID].players.indexOf[playerID] <= -1) {
+            socket.send(JSON.stringify({error: "Player not found"}));
+        }
+        
+        rooms[roomID].players[playerID].switchTeams();
+        socket.emit('roomChanged', rooms[roomID].players);
     });
 });
->>>>>>> a24cf87c9b455210dc9a6bc1382fa6cc04a68400
