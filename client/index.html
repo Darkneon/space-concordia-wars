@@ -19,9 +19,11 @@
     <!-- Include the compiled Ratchet JS -->
     <script src="lib/ratchet/js/ratchet.js"></script>      
     <script src="lib/dom.js"></script>     
+    <script src="lib/phaser.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="components/join-game.js"></script>    
     <script src="components/new-room.js"></script>
+    <script src="games/iridescence/iridescence.js"></script>
     <script>
          
         $(document).ready(function() {
@@ -29,16 +31,18 @@
             var newRoomrComponent = new NewRoom({ button: '#newRoom'});
 
             var socket = io.connect('/');
+            
+            $('#game1').on('click', function() {
+                $('body').html('<div id="theGame"></div>');
+                var iridescence = new Iridescence({ path: '/games/iridescence'});
+            });
         });
     </script>
-
-
   </head>
   <body>
 
     <!-- Make sure all your bars are the first things in your <body> -->
-
-      
+    
     <header class="bar bar-nav">
       <h1 class="title">Space Concordia Wars</h1>
     </header>
@@ -57,7 +61,7 @@
         <input type="text" placeholder="Nickname">                 
         <button id='newRoom' class="btn btn-primary btn-block">New Room</button>                
         <a href="#modal" id='join-game' class="btn btn-positive btn-block">Join Room</a>
-        
+        <a id='game1' class="btn btn-positive btn-block">Test Game #1</a>
         
         <div class="card">
             <ul class="table-view">
