@@ -10,9 +10,10 @@
     <!-- Makes your prototype chrome-less once bookmarked to your phone's home screen -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-
-    <!-- Include the compiled Ratchet CSS -->
+    
+    
     <link href="lib/ratchet/css/ratchet.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
 
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 
@@ -20,22 +21,41 @@
     <script src="lib/ratchet/js/ratchet.js"></script>      
     <script src="lib/dom.js"></script>     
     <script src="lib/phaser.js"></script>
+    <script src="lib/markup.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="components/join-game.js"></script>    
     <script src="components/new-room.js"></script>
-    <script src="games/iridescence/iridescence.js"></script>
+    <script src="components/players-room/players-room.js"></script>
+    <script src="games/iridescence/iridescence.js"></script>    
     <script>
          
         $(document).ready(function() {
+            var socket = io.connect('/');
+            
             var joinGameComponent = new JoinGame({ button: '#join-game', modalContent: '#modal'});              
             var newRoomrComponent = new NewRoom({ button: '#newRoom'});
+            var playersRoomComponent = new PlayersRoom({
+                socket: socket, 
+                path: '/components/players-room',
+                currentPlayer: {
+                    name: 'Me',
+                    team: 'red'
+                },
+                elements: {
+                    content: '#players-room'
+                }
+            });
 
-            var socket = io.connect('/');
+            
+            
+            socket.on('teamChanged', function(result) {
+                console.log(result);
+            });
             
             $('#game1').on('click', function() {
                 $('body').html('<div id="theGame"></div>');
                 var iridescence = new Iridescence({ path: '/games/iridescence'});
-            });
+            });                                
         });
     </script>
   </head>
@@ -63,15 +83,7 @@
         <a href="#modal" id='join-game' class="btn btn-positive btn-block">Join Room</a>
         <a id='game1' class="btn btn-positive btn-block">Test Game #1</a>
         
-        <div class="card">
-            <ul class="table-view">
-                <li class="table-view-cell table-view-divider">Connected:</li>
-                <li class="table-view-cell">Player 1</li>
-                <li class="table-view-cell">Player 2</li>            
-                <li class="table-view-cell">Player 3</li>
-                <li class="table-view-cell">Player 4</li>
-            </ul>
-        </div>            
+        <div id='players-room' class="card"></div>            
     </div>
 
   </body>

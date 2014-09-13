@@ -1,0 +1,4 @@
+<ul class="table-view">
+    <li id="red-team" class="table-view-cell table-view-divider">Red Team:</li>                    
+    <li id="blue-team" class="table-view-cell table-view-divider">Blue Team:</li>                
+</ul>
