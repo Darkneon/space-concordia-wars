@@ -69,5 +69,20 @@ var server = app.listen(3000, function () {
 var io = socketio.listen(server);
 
 io.sockets.on('connection', function (socket) {
-    console.log('A socket connected!');
+    console.log('A socket connected!');        
+    
+    setTimeout(function() {
+        console.log('playerJoined emitted');
+        socket.emit('playerJoined', { name: 'New player', team : 'blue' });
+    }, 100);
+    
+    socket.on('changeTeam', function(msg) {
+        console.log('changeTeam called');
+        socket.emit('roomChanged', { 
+            players: [
+                { name: 'Me', team: 'blue' },
+                { name: 'New player', team: 'blue' }
+            ]
+        });
+    });
 });

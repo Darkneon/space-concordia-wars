@@ -1,0 +1,1 @@
+<li class="table-view-cell">{{name}}<button id="change-team-btn" class="btn">Change Team</button></li>
