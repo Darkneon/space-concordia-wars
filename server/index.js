@@ -129,8 +129,8 @@ io.sockets.on('connection', function (socket) {
     
     socket.on('changeTeam', function (msg) {
         console.log('changeTeam called');
-        var roomID = msg; //?
-        var playerID = msg; //?
+        var roomID = rooms.length - 1; //?
+        var playerID = msg.playerID; //?
         if (rooms.indexOf[roomID] <= -1) {
   //          socket
             socket.send(JSON.stringify({error: "Room not found"}));
@@ -140,7 +140,7 @@ io.sockets.on('connection', function (socket) {
             socket.send(JSON.stringify({error: "Player not found"}));
         }
         
-        rooms[roomID].players[playerID].switchTeams();
+        rooms[roomID].players[0].switchTeams();
         socket.emit('roomChanged', rooms[roomID].players);
     });
 });
