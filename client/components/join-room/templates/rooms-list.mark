@@ -1,0 +1,3 @@
+<div class="card">
+    <ul id="rooms-list" class="table-view"></ul>
+</div>

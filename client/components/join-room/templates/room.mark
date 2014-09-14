@@ -1,0 +1,5 @@
+<li class="table-view-cell">        
+    Room {{id}}
+    <span class="room-players">[{{players}}/{{capacity}}]</span>
+    <button class="btn">Join</button>
+</li>

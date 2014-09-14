@@ -5,3 +5,8 @@
 #blue-team {
     color: #00f
 }
+
+.room-players {
+    font-size: 12px;
+    color: gray;
+}

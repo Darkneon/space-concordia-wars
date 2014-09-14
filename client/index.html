@@ -23,7 +23,9 @@
     <script src="lib/phaser.js"></script>
     <script src="lib/markup.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script src="components/join-game.js"></script>    
+      
+    <link href="components/join-room/css/join-room.css" rel="stylesheet">  
+    <script src="components/join-room/join-room.js"></script>    
     <script src="components/new-room/new-room.js"></script>
     <script src="components/players-room/players-room.js"></script>
     <script src="games/iridescence/iridescence.js"></script>    
@@ -56,9 +58,15 @@
                 
             });
             
-            var joinGameComponent = new JoinGame({ button: '#join-game', modalContent: '#modal'});                          
-            
-            
+            var joinGameComponent = new JoinRoom({ 
+                path: '/components/join-room', 
+                elements: {
+                    content: '#join-room',
+                    modal: '#modal'
+                }
+            });
+                
+                        
             
             $('#game1').on('click', function() {
                 $('body').html('<div id="theGame"></div>');
@@ -81,20 +89,12 @@
       <h1 class="title">Space Concordia Wars</h1>
     </header>
     
-    <div id="modal" class="modal">
-        <header class="bar bar-nav">       
-            <a class="icon icon-close pull-right" href="#modal"></a>
-            <h1 class="title"></h1>
-        </header>
-        
-        <div class="content">            
-        </div>
-    </div>      
+    <div id="modal" class="modal"></div>      
       
     <div class="content">            
         <input id='nickname' type="text" placeholder="Nickname" />        
-        <div id='new-room'></div>                
-        <a href="#modal" id='join-game' class="btn btn-positive btn-block">Join Room</a>
+        <div id='new-room'></div>         
+        <div id='join-room'></div>         
         <a id='game1' class="btn btn-positive btn-block">Test Game #1</a>
         <a id='game2' class="btn btn-positive btn-block">Test Game #2</a>
         
