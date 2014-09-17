@@ -3,13 +3,30 @@
 //new room
 //music
 //nick handling
+//fix bugs
+//rooms
 
 "use strict";
 
 var PORT = 3000;
 var express  = require('express');
-var socketio = require('socket.io');
+//var socketio = require('socket.io');
 var bodyParser = require('body-parser');
+var path = require('path');
+var app = express();
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
+
+app.use(express.static(path.join(__dirname, '../client')));
+app.use(bodyParser.urlencoded());
+
+
+server.listen(PORT, function() {
+    console.log('And we are live on port %d', server.address().port);
+});
+
+//io.set('origins', 'localhost:3000');
+
 
 var id = 0;
 var rooms = [];
@@ -25,7 +42,7 @@ function Room(id) {
 
 function Player(nickname) {
     this.id = nickname;
-    this.nickname = nickname
+    this.nickname = nickname;
     this.team = 'red';
     this.score = -1;
 }
@@ -39,12 +56,12 @@ Player.prototype.switchTeams = function () {
     this.team = this.team === "red" ? "blue" : "red";
 };
 
-function updateGameList() {    
+function updateGameList() {
     console.log(rooms);
     io.sockets.emit(
-        'refresh', 
-        JSON.stringify(rooms.filter(function(room) {
-            return room.players.length < room.roomCapacity; 
+        'refresh',
+        JSON.stringify(rooms.filter(function (room) {
+            return room.players.length < room.roomCapacity;
         }))
     );
 }
@@ -67,13 +84,9 @@ Room.prototype.removePlayer = function (playerID) {
     return false;
 };
 
-var app = express();
-
-app.use(express.static(__dirname + '/client'));
-app.use(bodyParser.urlencoded());
 
 app.get('/', function (req, res) {
-    res.sendFile(__dirname + '/client/index.html');
+    res.sendFile(path.join(__dirname, '../client', 'index.html'));
 });
 
 app.get('/getRooms', function (req, res) {
@@ -88,6 +101,8 @@ app.get('/getRoom/:id', function (req, res) {
 app.post('/newRoom', function (req, res) {    
     id += 1; //temp
     rooms[id] = new Room(id);
+   // io.socket.join(id.toString());
+    
     rooms[id].addPlayer(req.body.nickname);
     res.end(JSON.stringify(id));
     updateGameList();
@@ -99,9 +114,10 @@ app.post('/joinRoom', function (req, res) {
     
     if (rooms.indexOf(roomID) > -1) {
         if (rooms[roomID].players.length < rooms[roomID].roomCapacity) {
+            socket.join(roomID.toString());
             rooms[roomID].players.push(req.params.playerID);
             res.end("ok"); //do we need code numbers for errors?
-            updateGameList();   
+            updateGameList();
             
         } else {
             res.end(JSON.stringify({error: "Room is full"}));
@@ -111,21 +127,31 @@ app.post('/joinRoom', function (req, res) {
     }
 });
 
-var server = app.listen(PORT, function () {
-    console.log('And we are live on port %d', server.address().port);
+app.post('/leaveRoom', function(req, res){
+    var roomID = req.params.roomID;
+    var playerID = req.params.playerID;
+    
+    rooms[roomID].removePlayer(playerID); 
+    if(rooms[roomID].players.length == 0) {
+        rooms[roomID] = null;
+    }
+    socket.leave(roomID.toString());
 });
 
-var io = socketio.listen(server);
+//var server = app.listen(PORT, function () {
+//    console.log('And we are live on port %d', server.address().port);
+//});
+
 
 io.sockets.on('connection', function (socket) {
     console.log('A socket connected!');        
     
-    /*
-    setTimeout(function() {
-        console.log('playerJoined emitted');
-        socket.emit('playerJoined', { name: 'New player', team : 'blue' });
-    }, 100);
-    */
+    
+    //setTimeout(function() {
+    //    console.log('playerJoined emitted');
+    //    socket.emit('playerJoined', { name: 'New player', team : 'blue' });
+    //}, 100);
+    
     
     socket.on('changeTeam', function (msg) {
         console.log('changeTeam called');
@@ -141,6 +167,7 @@ io.sockets.on('connection', function (socket) {
         }
         
         rooms[roomID].players[0].switchTeams();
-        socket.emit('roomChanged', rooms[roomID].players);
+        io.to(roomID.toString()).emit('roomChanged', rooms[roomID].players);
     });
 });
+

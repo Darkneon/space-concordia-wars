@@ -35,7 +35,11 @@
     }
     
     var isNicknameValid = function(nickname) {
-        return nickname.trim() !== '';    
+        if(nickname.trim() == ''){
+            return false;
+        }
+        
+    
     };
     
     window.NewRoom = NewRoom;
