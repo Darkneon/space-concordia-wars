@@ -1,16 +1,8 @@
 /*jslint node: true */
-//List game rooms
-//new room
-//music
-//nick handling
-//fix bugs
-//rooms
-
 "use strict";
 
 var PORT = 3000;
 var express  = require('express');
-//var socketio = require('socket.io');
 var bodyParser = require('body-parser');
 var path = require('path');
 var app = express();
@@ -25,13 +17,28 @@ server.listen(PORT, function() {
     console.log('And we are live on port %d', server.address().port);
 });
 
-//io.set('origins', 'localhost:3000');
-
-
 var id = 0;
 var rooms = [];
-//var players = [];
+var playerNames = [];
 
+function isValidNickname(name) {
+    if(name.trim() != "") {
+        if(playerNames.indexOf(name) == -1) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function updateGameList() {
+    console.log(rooms);
+    io.sockets.emit(
+        'refresh',
+        JSON.stringify(rooms.filter(function (room) {
+            return room.players.length < room.roomCapacity;
+        }))
+    );
+}
 
 function Room(id) {
     this.id = id;
@@ -55,16 +62,6 @@ Player.prototype.reset = function () {
 Player.prototype.switchTeams = function () {
     this.team = this.team === "red" ? "blue" : "red";
 };
-
-function updateGameList() {
-    console.log(rooms);
-    io.sockets.emit(
-        'refresh',
-        JSON.stringify(rooms.filter(function (room) {
-            return room.players.length < room.roomCapacity;
-        }))
-    );
-}
 
 //Perhaps create a prototype of room and pull up these methods
 Room.prototype.addPlayer = function (playerID) {
@@ -94,10 +91,12 @@ app.get('/getRooms', function (req, res) {
 });
 
 app.get('/getRoom/:id', function (req, res) {
+    console.log(req.params.id);
     res.json(rooms[req.params.id]);
 });
 
 
+/*
 app.post('/newRoom', function (req, res) {    
     id += 1; //temp
     rooms[id] = new Room(id);
@@ -108,6 +107,7 @@ app.post('/newRoom', function (req, res) {
     updateGameList();
    // io.sockets.emit('roomChanged', rooms[id].players);
 });
+*/
 
 app.post('/joinRoom', function (req, res) {
     var roomID = req.params.roomID;
@@ -146,17 +146,32 @@ app.post('/leaveRoom', function(req, res){
 io.sockets.on('connection', function (socket) {
     console.log('A socket connected!');        
     
-    
-    //setTimeout(function() {
-    //    console.log('playerJoined emitted');
-    //    socket.emit('playerJoined', { name: 'New player', team : 'blue' });
-    //}, 100);
-    
+    socket.on('newRoom', function(msg) {
+        console.log("newRoom called");
+        var playerNick = msg.nickname;
+        
+        if(isValidNickname(playerNick)) {
+            var roomID = id;
+            id += 1;
+            playerNames.push(playerNick);
+            rooms[roomID] = new Room(roomID);
+            rooms[roomID].addPlayer(playerNick);
+            
+            console.log("roomCreated");
+            socket.join(roomID.toString());
+            socket.emit("roomCreated", JSON.stringify(roomID));
+            updateGameList();
+        }
+        else {
+            socket.emit("invalidNick");
+        }
+    });
     
     socket.on('changeTeam', function (msg) {
         console.log('changeTeam called');
-        var roomID = rooms.length - 1; //?
-        var playerID = msg.playerID; //?
+        var roomID = msg.roomID;
+        var playerID = msg.playerID;
+        
         if (rooms.indexOf[roomID] <= -1) {
   //          socket
             socket.send(JSON.stringify({error: "Room not found"}));

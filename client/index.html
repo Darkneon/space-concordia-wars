@@ -36,18 +36,27 @@
             var socket = io.connect('/');
             
             var newRoomComponent = new NewRoom({
+                socket: socket,
                 path: '/components/new-room', 
                 elements: { 
                     content: '#new-room', 
                     nickname: '#nickname'
                 },
                 onNewRoomCreated: function(roomID, nickname) {
+                    $.get('/getRooms', {}, function(result){
+                        console.log(result);
+                        for(var i = 0; i < result.length; i++) {
+                            console.log(result[i]);
+                        }
+                    }, 'json');
+                    
                     $.get('/getRoom/' + roomID, {}, function(result) {
                         $('#join-game').hide();
                         var playersRoomComponent = new PlayersRoom({
                             socket: socket, 
                             path: '/components/players-room',
                             nickname: nickname,
+                            roomID: roomID,
                             players: result.players,
                             elements: {
                                 content: '#players-room'

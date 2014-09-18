@@ -1,7 +1,8 @@
 (function(window) {        
     var PlayersRoom = function(options) {                           
         this._templates = {};
-        this._nickname = options.nickname;                
+        this._nickname = options.nickname;
+        this._roomID = options.roomID;
         this._$contentElement = $(options.elements.content);
         this._socket = options.socket;
         
@@ -20,13 +21,13 @@
         }.bind(this));
         
         this._socket.on('playerJoined', this.onPlayerJoin.bind(this)); 
-        this._socket.on('roomChanged', this.onRoomChanged.bind(this));    
+        this._socket.on('roomChanged', this.onRoomChanged.bind(this));
         
         this._$contentElement.on('click', '#change-team-btn', this.onChangeTeamClick .bind(this));
     }
 
     PlayersRoom.prototype.onChangeTeamClick = function() { 
-        this._socket.emit('changeTeam', { playerID:  this._nickname});
+        this._socket.emit('changeTeam', { playerID:  this._nickname, roomID: this._roomID});
     }
      
     PlayersRoom.prototype.onPlayerJoin = function(data) { 
