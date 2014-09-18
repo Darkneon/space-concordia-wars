@@ -32,7 +32,7 @@ Game.Play.prototype = {
 		
 		var emitterB = game.add.emitter(game.world.centerX, game.world.centerY, 10);
 		emitterB.makeParticles('stars');
-		emitterB.setSize(900,600);
+		emitterB.setSize(w,h);
 		emitterB.gravity = 0;
 		
 		emitterB.minParticleScale = 1.0
@@ -56,7 +56,7 @@ Game.Play.prototype = {
 		mute.frame = 1 - muteValue
 
 		//Player
-		player = game.add.sprite(100, 400, "player");
+		player = game.add.sprite(100, h - 200, "player");
 		game.physics.arcade.enable(player);
 		player.body.bounce.y = 0;
 		player.body.gravity.y = 2000;
@@ -69,7 +69,7 @@ Game.Play.prototype = {
 		player.animations.add('blue', [2], 10, true);
 		
 		//Platforms
-		firstPlatform = game.add.sprite(50, 450, "platformW");
+		firstPlatform = game.add.sprite(50, h - 100, "platformW");
 		game.physics.arcade.enable(firstPlatform);
 		firstPlatform.body.velocity.x = -800; 
 		firstPlatform.checkWorldBounds = true;
@@ -109,7 +109,7 @@ Game.Play.prototype = {
 		
 		
 		//Scanlines
-		for (var i = 0; i < 100; i++) {
+		for (var i = 0; i < 300; i++) {
 			sc = game.add.sprite(0, i*6, "sc");
 			sc.scale.x = 1;
 			sc.scale.y = 1;
@@ -121,8 +121,8 @@ Game.Play.prototype = {
 		noise = game.add.sprite(0, 0, "noise");
 		noise.scale.x = 2;
 		noise.scale.y = 2;
-		noise.fixedToCamera = true;		
-		noise.alpha = 0.2;	
+		noise.fixedToCamera = true;
+		noise.alpha = 0.2;
 		noise.animations.add('noiseloop',[0, 1, 2],15,true);
 		noise.animations.play('noiseloop');
 		
@@ -237,7 +237,7 @@ Game.Play.prototype = {
             
 		
 		//restart
-		if (player.position.y > 900)
+		if (player.position.y > h)
 			this.restartGame();
 
 	},
@@ -324,9 +324,9 @@ Game.Play.prototype = {
 	},
 	
 	addPlatform: function() {  
-		var posY = Math.floor(Math.random()*(500-300+1)+300)
+		var posY = Math.floor(Math.random()*(h-300+1)+300)
 		var color = Math.floor(Math.random() * ((4-1)+1) + 1);
-		this.createPlatform(900, posY, color); 
+		this.createPlatform(w, posY, color);
 	},
 	
 	restartGame: function() {  
@@ -336,3 +336,5 @@ Game.Play.prototype = {
 	},
 	
 }
+
+//@ sourceURL=play.js

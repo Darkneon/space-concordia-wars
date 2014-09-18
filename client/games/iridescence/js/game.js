@@ -1,10 +1,11 @@
 (function() {
     
     var I = function(options) {
-        window.h = 480;
-        window.w = 320;
+        window.h = 600;
+        window.w = 900;
 
-        window.game = new Phaser.Game(w, h, Phaser.AUTO, 'theGame');
+        window.game = new Phaser.Game(w, h, Phaser.CANVAS, 'theGame');
+
 
         game.options = options;
         game.state.add('Preload', Game.Preload);
@@ -19,3 +20,5 @@
     
     window.I = I;
 })();
+
+//@ sourceURL=game.js

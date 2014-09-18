@@ -4,8 +4,8 @@ Game.Instructions.prototype = {
 	create: function () {
 		
 		spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-	
-		game.stage.backgroundColor = '#043C59';
+
+		game.stage.backgroundColor = '#123';
 		
 		//Stars
 		var emitterA = game.add.emitter(game.world.centerX, game.world.centerY, 100);
@@ -25,7 +25,7 @@ Game.Instructions.prototype = {
 		emitterB.gravity = 0;
 		
 		emitterB.minParticleScale = 1.0
-		emitterB.maxParticleScale = 2.5
+		emitterB.maxParticleScale = 3.5
 		emitterB.minParticleSpeed.setTo(-10, -10);
 		emitterB.maxParticleSpeed.setTo(10, 10);
 		emitterB.start(false, 5000, 500);
