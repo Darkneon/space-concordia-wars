@@ -2,8 +2,10 @@
     var JoinRoom = function(options) {                     
         this._templatesCache = {};  
         this._$contentElement = $(options.elements.content);
+        this._$nickname = $(options.elements.nickname);
         this._$modalElement = $(options.elements.modal);
-                
+        this._onJoined = options.onJoined;
+
         $.get(options.path + '/templates/join-room-button.mark', function(template) {                                
             this._templatesCache['join-room-button'] = template;
             this._$contentElement.append(template);
@@ -21,10 +23,13 @@
         $.get(options.path + '/templates/rooms-list.mark', function(template) {                                
             this._templatesCache['rooms-list'] = template;            
         }.bind(this)); 
-        
+
+        // Button that show list of rooms
         this._$contentElement.on('click touchstart', '#join-room-btn', this.onJoinRoomClick.bind(this));
-        
-    }
+
+        // Button on each room to join that room
+        this._$modalElement.on('click touchstart', '.room > .btn', this.onJoinClick.bind(this));
+    };
    
     JoinRoom.prototype.onJoinRoomClick = function() {                
         var that = this;
@@ -47,7 +52,26 @@
         .fail(function() { 
             console.error('list-games') 
         });
-    }
+    };
+
+    JoinRoom.prototype.onJoinClick = function(e) {
+        console.log('onJoinClicked');
+        var that = this;
+        var data = {
+            roomID: e.target.getAttribute('data-room-id'),
+            playerID: this._$nickname.val()
+        };
+
+        $.post('/joinRoom', data,  function(result) {
+            that._$modalElement.hide();
+            that._onJoined(data.roomID, data.playerID);
+            console.log('join room');
+        })
+        .fail(function() {
+            console.error('list-games')
+        });
+    };
+
             
     window.JoinRoom = JoinRoom;
 })(window);

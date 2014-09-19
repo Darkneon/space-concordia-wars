@@ -1,5 +1,5 @@
 <header class="bar bar-nav">       
-    <a class="icon icon-close pull-right" href="#modal"></a>
+    <a id='modal-close-icon' class="icon icon-close pull-right" href="#modal"></a>
     <h1 class="title">List of Rooms</h1>
 </header>
 
