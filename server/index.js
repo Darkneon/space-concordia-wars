@@ -1,4 +1,7 @@
 /*jslint node: true */
+// cleanups
+// music
+//implement joining and leaving rooms for rooms
 "use strict";
 
 var PORT = 3000;
@@ -19,13 +22,14 @@ server.listen(PORT, function() {
 
 var id = 0;
 var rooms = [];
-var playerNames = [];
+var playerList = [];
 
 function isValidNickname(name) {
     if(name.trim() != "") {
-        if(playerNames.indexOf(name) == -1) {
-            return true;
-        }
+        for(
+        //if(playerList.) {
+        //    return true;
+        //}
     }
     return false;
 }
@@ -45,6 +49,12 @@ function Room(id) {
     this.roomCapacity = 8;
     this.players = [];
     //maybe add a gamestatus enum
+}
+
+function PlayerRecord(id, nickname) {
+    this.id = id;
+    this.nickname = nickname;
+    this.joinedRoom = null;
 }
 
 function Player(nickname) {
@@ -112,7 +122,7 @@ app.post('/newRoom', function (req, res) {
 app.post('/joinRoom', function (req, res) {
     var roomID = req.params.roomID;
     
-    if (rooms.indexOf(roomID) > -1) {
+    if (rooms.[roomID] != null) {
         if (rooms[roomID].players.length < rooms[roomID].roomCapacity) {
             socket.join(roomID.toString());
             rooms[roomID].players.push(req.params.playerID);
@@ -144,7 +154,8 @@ app.post('/leaveRoom', function(req, res){
 
 
 io.sockets.on('connection', function (socket) {
-    console.log('A socket connected!');        
+    console.log('A socket connected!');
+    console.log(socket.id);
     
     socket.on('newRoom', function(msg) {
         console.log("newRoom called");
@@ -153,7 +164,7 @@ io.sockets.on('connection', function (socket) {
         if(isValidNickname(playerNick)) {
             var roomID = id;
             id += 1;
-            playerNames.push(playerNick);
+            playerList[socket.id] = new PlayerRecord(socket.id, playerNick);
             rooms[roomID] = new Room(roomID);
             rooms[roomID].addPlayer(playerNick);
             
@@ -183,6 +194,31 @@ io.sockets.on('connection', function (socket) {
         
         rooms[roomID].players[0].switchTeams();
         io.to(roomID.toString()).emit('roomChanged', rooms[roomID].players);
+    });
+    
+    socket.on('disconnect', function () {
+       /* var playerIdIndex = playerList.map (function (player) {return player.id; }).indexOf(socket.id);
+        if(playerIdIndex > -1){
+            if(playerList[playerIdIndex].joinedRoom != null){
+                var roomID = playerList[playerIdIndex].joinedRoom;
+                rooms[roomID].removePlayer(playerIdIndex);
+                if(rooms[roomID].players.length == 0) {
+                    delete rooms[roomID];
+                    updateGameList();
+                }
+            }
+            */
+        if(playerList[socket.id] != null){
+            if(playerList[socket.id].joinedRoom != null
+                var roomID = playerList[socket.id].joinedRoom;
+                rooms[roomID].removePlayer(playerIdIndex);
+            
+                if(rooms[roomID].players.length == 0) {
+                    delete rooms[roomID];
+                    updateGameList();
+                }
+            delete playerList[socket.id];
+        }
     });
 });
 
