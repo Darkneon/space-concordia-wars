@@ -25,13 +25,14 @@ var rooms = [];
 var playerList = [];
 
 function isValidNickname(name) {
-    if(name.trim() != "") {
-        for(
+    //if(name.trim() != "") {
+       // for(
         //if(playerList.) {
         //    return true;
         //}
-    }
-    return false;
+  //  }
+//return false;
+    return true;
 }
 
 function updateGameList() {
@@ -96,7 +97,8 @@ app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, '../client', 'index.html'));
 });
 
-app.get('/getRooms', function (req, res) {
+// REST
+app.get('/room', function (req, res) {
     res.json(rooms);
 });
 
@@ -211,7 +213,7 @@ io.sockets.on('connection', function (socket) {
             }
             */
         if(playerList[socket.id] != null){
-            if(playerList[socket.id].joinedRoom != null
+            if(playerList[socket.id].joinedRoom != null){
                 var roomID = playerList[socket.id].joinedRoom;
                 rooms[roomID].removePlayer(playerIdIndex);
             
@@ -219,7 +221,8 @@ io.sockets.on('connection', function (socket) {
                     delete rooms[roomID];
                     updateGameList();
                 }
-            delete playerList[socket.id];
+                delete playerList[socket.id];
+            }
         }
     });
 });
