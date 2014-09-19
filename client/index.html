@@ -51,7 +51,8 @@
                     }, 'json');
                     
                     $.get('/getRoom/' + roomID, {}, function(result) {
-                        $('#join-game').hide();
+                        $('#join-room').hide();
+                        $('#new-room').hide();
                         var playersRoomComponent = new PlayersRoom({
                             socket: socket, 
                             path: '/components/players-room',
@@ -71,7 +72,27 @@
                 path: '/components/join-room', 
                 elements: {
                     content: '#join-room',
+                    nickname: '#nickname',
                     modal: '#modal'
+                },
+                onJoined: function(roomID, nickname) {
+                    $('#join-room').hide();
+                    $('#new-room').hide();
+
+                    $.get('/getRoom/' + roomID, {}, function(result) {
+                        $('#join-room').hide();
+                        $('#new-room').hide();
+                        var playersRoomComponent = new PlayersRoom({
+                            socket: socket,
+                            path: '/components/players-room',
+                            nickname: nickname,
+                            roomID: roomID,
+                            players: result.players,
+                            elements: {
+                                content: '#players-room'
+                            }
+                        });
+                    }, 'json');
                 }
             });
                 

@@ -1,5 +1,5 @@
-<li class="table-view-cell">        
+<li class="table-view-cell room">
     Room {{id}}
     <span class="room-players">[{{players}}/{{capacity}}]</span>
-    <button class="btn">Join</button>
+    <button data-room-id="{{id}}" class="btn">Join</button>
 </li>

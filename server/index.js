@@ -120,12 +120,11 @@ app.post('/newRoom', function (req, res) {
 */
 
 app.post('/joinRoom', function (req, res) {
-    var roomID = req.params.roomID;
-    
-    if (rooms.[roomID] != null) {
+    var roomID = parseInt(req.body.roomID, 10);
+    if (rooms[roomID]) {
         if (rooms[roomID].players.length < rooms[roomID].roomCapacity) {
-            socket.join(roomID.toString());
-            rooms[roomID].players.push(req.params.playerID);
+            //socket.join(roomID.toString());
+            rooms[roomID].addPlayer(req.body.playerID);
             res.end("ok"); //do we need code numbers for errors?
             updateGameList();
             
@@ -180,20 +179,23 @@ io.sockets.on('connection', function (socket) {
     
     socket.on('changeTeam', function (msg) {
         console.log('changeTeam called');
-        var roomID = msg.roomID;
+        var roomID = parseInt(msg.roomID, 10);
         var playerID = msg.playerID;
         
-        if (rooms.indexOf[roomID] <= -1) {
+        if (!rooms[roomID]) {
   //          socket
             socket.send(JSON.stringify({error: "Room not found"}));
         }
-        
-        if (rooms[roomID].players.indexOf[playerID] <= -1) {
+
+        var player = rooms[roomID].players.filter(function(player) {
+            return player.nickname === playerID;
+        })[0];
+        if (!player) {
             socket.send(JSON.stringify({error: "Player not found"}));
         }
         
-        rooms[roomID].players[0].switchTeams();
-        io.to(roomID.toString()).emit('roomChanged', rooms[roomID].players);
+        player.switchTeams();
+        io.emit('roomChanged', rooms[roomID].players);
     });
     
     socket.on('disconnect', function () {
