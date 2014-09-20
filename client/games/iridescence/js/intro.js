@@ -5,7 +5,7 @@ Game.Intro.prototype = {
 		
 		spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 		
-		game.stage.backgroundColor = '#043C59';
+		game.stage.backgroundColor = '#000';
 		
 		//Stars
 		var emitterA = game.add.emitter(game.world.centerX, game.world.centerY, 100);
