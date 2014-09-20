@@ -59,6 +59,6 @@ Game.Load.prototype = {
 
 	},
 	create: function () {
-		game.state.start('Intro');
+		game.state.start('Wait');
 	}
 };

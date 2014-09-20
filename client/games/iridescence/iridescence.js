@@ -13,8 +13,7 @@
     
     var Iridescence = function(params) {                      
         load(params.path + '/js/load.js');
-        load(params.path + '/js/intro.js');
-        load(params.path + '/js/instructions.js');
+        load(params.path + '/js/wait.js');
         load(params.path + '/js/play.js');
         load(params.path + '/js/over.js');
         load(params.path + '/js/game.js');        

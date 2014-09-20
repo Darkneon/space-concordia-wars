@@ -10,8 +10,7 @@
         game.options = options;
         game.state.add('Preload', Game.Preload);
         game.state.add('Load', Game.Load);
-        game.state.add('Intro', Game.Intro);
-        game.state.add('Instructions', Game.Instructions);
+        game.state.add('Wait', Game.Wait);
         game.state.add('Play', Game.Play);
         game.state.add('Over', Game.Over);
 
