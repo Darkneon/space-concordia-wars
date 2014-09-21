@@ -87,6 +87,10 @@ function preload () {
     game.load.image('earth', 'assets/scorched_earth.png');
     game.load.spritesheet('kaboom', 'assets/explosion.png', 64, 64, 23);
 
+    game.load.image('phaser_touch_control_compass', 'assets/compass_rose.png');
+    game.load.image('phaser_touch_control_touch_segment', 'assets/touch_segment.png');
+    game.load.image('phaser_touch_control_touch', 'assets/touch.png');
+
 }
 
 var land;
@@ -164,7 +168,7 @@ function create () {
     bullets = game.add.group();
     bullets.enableBody = true;
     bullets.physicsBodyType = Phaser.Physics.ARCADE;
-    bullets.createMultiple(30, 'bullet', 0, false);
+    bullets.createMultiple(50, 'bullet', 0, false);
     bullets.setAll('anchor.x', 0.5);
     bullets.setAll('anchor.y', 0.5);
     bullets.setAll('outOfBoundsKill', true);
@@ -193,7 +197,8 @@ function create () {
     game.camera.focusOnXY(0, 0);
 
     cursors = game.input.keyboard.createCursorKeys();
-
+    this.touchControl = this.game.plugins.add(Phaser.Plugin.TouchControl);
+    this.touchControl.inputEnable();
 }
 
 function removeLogo () {
@@ -258,12 +263,13 @@ function update () {
     turret.x = tank.x;
     turret.y = tank.y;
 
-    turret.rotation = game.physics.arcade.angleToPointer(turret);
+    var rot = Phaser.Math.radToDeg(Phaser.Math.angleBetween(0, 0,-this.touchControl.speed.x, -this.touchControl.speed.y));
+    turret.angle = rot;
 
     if (game.input.activePointer.isDown)
     {
         //  Boom!
-        fire();
+        fire(rot, -this.touchControl.speed.x, -this.touchControl.speed.y);
     }
 
 }
@@ -289,7 +295,7 @@ function bulletHitEnemy (tank, bullet) {
 
 }
 
-function fire () {
+function fire (bulletRotation, x, y) {
 
     if (game.time.now > nextFire && bullets.countDead() > 0)
     {
@@ -299,7 +305,8 @@ function fire () {
 
         bullet.reset(turret.x, turret.y);
 
-        bullet.rotation = game.physics.arcade.moveToPointer(bullet, 1000, game.input.activePointer, 500);
+        console.log(x, y);
+        bullet.rotation = game.physics.arcade.moveToXY(bullet, x * 100, y * 100, 400);
     }
 
 }
