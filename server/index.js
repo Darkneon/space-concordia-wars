@@ -1,7 +1,4 @@
 /*jslint node: true */
-// cleanups
-// music
-//implement joining and leaving rooms for rooms
 "use strict";
 
 var PORT = 3000;
@@ -25,14 +22,20 @@ var rooms = [];
 var playerList = [];
 
 function isValidNickname(name) {
-    //if(name.trim() != "") {
-       // for(
-        //if(playerList.) {
-        //    return true;
-        //}
-  //  }
-//return false;
-    return true;
+    console.log(name);
+    console.log(playerList);
+    if(name.trim() != "") {
+        for(var recordID in playerList){ //not an efficient solution but the number of expected users is very small.
+            if(playerList.hasOwnProperty(recordID)) {
+                if (playerList[recordID].nickname == name) {
+                    return false;
+                }
+            }
+        }
+        
+        return true;
+    }
+    return false;
 }
 
 function updateGameList() {
@@ -197,7 +200,7 @@ io.sockets.on('connection', function (socket) {
         }
         
         player.switchTeams();
-        io.emit('roomChanged', rooms[roomID].players);
+        io.to(roomID.toString).emit('roomChanged', rooms[roomID].players);
     });
     
     socket.on('disconnect', function () {
