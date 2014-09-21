@@ -94,6 +94,14 @@
             game.load.image('phaser_touch_control_touch_segment', game.options.path + '/assets/touch_segment.png');
             game.load.image('phaser_touch_control_touch', game.options.path + '/assets/touch.png');
 
+            game.scale.scaleMode = Phaser.ScaleManager.EXACT_FIT;
+            game.scale.minWidth = 240;
+            game.scale.maxWidth = 640;
+            game.scale.minHeight = 170;
+            game.scale.maxHeight = 500;
+            game.scale.pageAlignHorizontally = true;
+            game.scale.pageAlignVertically = true;
+            game.scale.setScreenSize();
         }
 
         var land;
@@ -118,9 +126,6 @@
         var nextFire = 0;
 
         function create () {
-
-            //  Resize our game world to be a 2000 x 2000 square
-            game.world.setBounds(-1000, -1000, 2000, 2000);
 
             //  Our tiled scrolling background
             land = game.add.tileSprite(0, 0, 800, 600, 'earth');
