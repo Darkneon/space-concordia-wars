@@ -8,7 +8,7 @@ Game.Over.prototype = {
 		
 		spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.W);
 		
-		game.stage.backgroundColor = '#043C59';
+		game.stage.backgroundColor = '#000';
 		
 		//Stars
 		var emitterA = game.add.emitter(game.world.centerX, game.world.centerY, 100);
@@ -32,23 +32,33 @@ Game.Over.prototype = {
 		emitterB.minParticleSpeed.setTo(-10, -10);
 		emitterB.maxParticleSpeed.setTo(10, 10);
 		emitterB.start(false, 5000, 500);
-		
-		//Text
-		label1 = game.add.text(w/2, h/2-25, 'GAME OVER', {fill: '#FFA824' });
-		label1.anchor.setTo(0.5, 0.5);
-		label1.font = 'Press Start 2P';
-		label1.fontSize = '40px';
-		
-		label11 = game.add.text(w/2, h/2+10, 'SCORE: ' + scoreV, {fill: '#FDFFC4' });
-		label11.anchor.setTo(0.5, 0.5);
-		label11.font = 'Press Start 2P';
-		label11.fontSize = '30px';
-		
-		label2 = game.add.text(w/2, h/2+60, 'press W to try again', {fill: '#FDFFC4' });
-		label2.anchor.setTo(0.5, 0.5);
-		label2.font = 'Press Start 2P';
-		label2.fontSize = '20px';
-		
+
+        redScore = game.add.text(w/2 - 100, h/2 - 75, 'RED: 4', {fill: '#FDFFC4' });
+        redScore.anchor.setTo(0.5, 0.5);
+        redScore.font = 'Press Start 2P';
+        redScore.fontSize = '30px';
+
+        redScore = game.add.text(w/2, h/2 - 75, '-', {fill: '#FDFFC4' });
+        redScore.anchor.setTo(0.5, 0.5);
+        redScore.font = 'Press Start 2P';
+        redScore.fontSize = '30px';
+
+        blueScore = game.add.text(w/2 + 100, h/2 - 75, 'BLUE: 2', {fill: '#FDFFC4' });
+        blueScore.anchor.setTo(0.5, 0.5);
+        blueScore.font = 'Press Start 2P';
+        blueScore.fontSize = '30px';
+
+
+        label1 = game.add.text(w/2, h/2, 'Team RED Wins!', {fill: '#FFA824' });
+        label1.anchor.setTo(0.5, 0.5);
+        label1.font = 'Press Start 2P';
+        label1.fontSize = '40px';
+
+        label2 = game.add.text(w/2, h / 2 - (h / 2) / 2 + 375, 'game still in progress', {fill: '#FDFFC4' });
+        label2.anchor.setTo(0.5, 0.5);
+        label2.font = 'Press Start 2P';
+        label2.fontSize = '25px';
+
 		game.add.tween(label2).to({ alpha: 0.1 }, 500, Phaser.Easing.Linear.None)
 			.to({ alpha: 1 }, 500, Phaser.Easing.Linear.None).loop().start();
 		
@@ -95,19 +105,6 @@ Game.Over.prototype = {
 	},
 	
 	update: function() {
-		
-		if(scoreV<100)
-			label11.setText('SCORE: 0000' + scoreV)
-		else if(scoreV<1000)
-			label11.setText('SCORE: 000' + scoreV)
-		else if(scoreV<10000)
-			label11.setText('SCORE: 00' + scoreV)
-		else if(scoreV<100000)
-			label11.setText('SCORE: 0' + scoreV)
-		else
-			label11.setText('SCORE: ' + scoreV)
-		
-		
 		if (spaceKey.isDown) {
 			game.state.start('Play');
 			//introm.stop()
