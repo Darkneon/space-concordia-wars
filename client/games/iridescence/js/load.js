@@ -3,11 +3,20 @@ Game = {};
 Game.Preload = function (game){};
 Game.Load = function (game){};
 
-var muteValue = 1
+var muteValue = 1;
 
 Game.Preload.prototype = {
 	preload: function () {
-		game.stage.backgroundColor = '#000';	
+        game.scale.scaleMode = Phaser.ScaleManager.EXACT_FIT;
+        game.scale.minWidth = 240;
+        game.scale.maxWidth = 640;
+        game.scale.minHeight = 170;
+        game.scale.maxHeight = 500;
+        game.scale.pageAlignHorizontally = true;
+        game.scale.pageAlignVertically = true;
+        game.scale.setScreenSize();
+
+		game.stage.backgroundColor = '#000';
 		game.load.image('loading', game.options.path + '/assets/loading.png');
 		game.load.image('loadingBorder', game.options.path + '/assets/loadingBorder.png');
 	},
@@ -19,7 +28,7 @@ Game.Preload.prototype = {
 Game.Load.prototype = {
 	preload: function () {
 	    game.stage.backgroundColor = '#000';
-		
+		console.log(w, h);
 		loadingbarBorder = game.add.sprite(w/2, h/2+15, 'loadingBorder');
 		loadingbarBorder.x -= loadingbarBorder.width/2;
 		loadingbar = game.add.sprite(w/2, h/2+19, 'loading');
@@ -50,6 +59,6 @@ Game.Load.prototype = {
 
 	},
 	create: function () {
-		game.state.start('Intro');
+		game.state.start('Wait');
 	}
 };
