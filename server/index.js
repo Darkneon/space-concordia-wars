@@ -13,7 +13,7 @@ app.use(express.static(path.join(__dirname, '../client')));
 app.use(bodyParser.urlencoded());
 
 
-server.listen(PORT, function() {
+server.listen(PORT, function () {
     console.log('And we are live on port %d', server.address().port);
 });
 
@@ -24,10 +24,9 @@ var playerList = [];
 function isValidNickname(name) {
     console.log(name);
     console.log(playerList);
-    debugger;
-    if(name.trim() != "") {
-        for(var recordID in playerList){ //not an efficient solution but the number of expected users is very small.
-            if(playerList.hasOwnProperty(recordID)) {
+    if (name.trim() !== "") {
+        for (var recordID in playerList) { //not an efficient solution but the number of expected users is very small.
+            if (playerList.hasOwnProperty(recordID)) {
                 if (playerList[recordID].nickname == name) {
                     return false;
                 }
@@ -106,7 +105,7 @@ app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, '../client', 'index.html'));
 });
 
-// REST
+// Leaving the app.* methods here for now for compatibility
 app.get('/room', function (req, res) {
     res.json(rooms);
 });
@@ -170,7 +169,6 @@ io.sockets.on('connection', function (socket) {
     console.log(socket.id);
     
     socket.on('newRoom', function(msg) {
-        console.log("newRoom called");
         var playerNick = msg.nickname;
         
         if(isValidNickname(playerNick)) {
@@ -182,7 +180,6 @@ io.sockets.on('connection', function (socket) {
             rooms[roomID].addPlayer(playerNick);
             playerList[socket.id].joinedRoom = roomID;
             
-            console.log("roomCreated");
             socket.join(roomID.toString());
             socket.emit("roomCreated", JSON.stringify(roomID));
             updateGameList();
@@ -191,18 +188,43 @@ io.sockets.on('connection', function (socket) {
             socket.emit("invalidNick");
         }
     });
-    /*
+    
+    //TODO: update client code to use sockets and test out this code
+    
     socket.on('joinRoom', function(msg){
+        var roomID = parseInt(msg.roomID, 10);
+        var nickname = msg.nickname;
+        if(isValidNickname(nickname)){
+            //playerList[socket.id] = new PlayerRecord(socket.id, nickname);
+            if (rooms[roomID]) {
+                if (rooms[roomID].players.length < rooms[roomID].roomCapacity) {
+                    socket.join(roomID.toString()); //personal note: see if you can remove the toString()
+                    rooms[roomID].addPlayer(nickname);
+                    //socket.send("ok"); //What kind of confirmation method should we use?
+                    updateGameList();
+
+                } else {
+                    socket.send(JSON.stringify({error: "Room is full"}));
+                }
+            } else {
+                socket.send(JSON.stringify({error: "Room not found"}));
+            }
+        } else {
+            socket.send(JSON.stringify({error: "Nick in use"}));
+        }
     });
     
     socket.on('getRoom', function(msg){
+        var roomID = parseInt(msg.id, 10); //TODO: change client code to send .roomID instead of just .id
+        socket.send(JSON.stringify(rooms[roomID]));
     });
     
     socket.on('getAllRooms', function(msg){
+        socket.send(JSON.stringify(rooms));
     });
     
     socket.on('leaveRoom', function (msg) {
-        var roomID = msg.roomID;
+        var roomID = parseInt(msg.roomID, 10);
         var playerID = msg.playerID;
         rooms[roomID].removePlayer(playerID); 
         
@@ -211,7 +233,7 @@ io.sockets.on('connection', function (socket) {
         }
         socket.leave(roomID.toString());
     });
-    */
+    
     
     socket.on('changeTeam', function (msg) {
         console.log('changeTeam called');
@@ -219,7 +241,6 @@ io.sockets.on('connection', function (socket) {
         var playerID = msg.playerID;
         
         if (!rooms[roomID]) {
-  //          socket
             socket.send(JSON.stringify({error: "Room not found"}));
         }
 
@@ -236,15 +257,12 @@ io.sockets.on('connection', function (socket) {
     
     
     socket.on('disconnect', function () {
-        //console.log("Someone has disconnected");
-        //console.log(socket.id);
+        console.log("Someone has disconnected");
+        console.log(socket.id);
         if(playerList[socket.id] != null){
             if(playerList[socket.id].joinedRoom != null){
                 var roomID = playerList[socket.id].joinedRoom;
-                //console.log(roomID);
                 rooms[roomID].removePlayer(playerList[socket.id].nickname);
-               // console.log(rooms[roomID].players);
-               // console.log(rooms[roomID].players.length);
             
                 if(rooms[roomID].players.length == 0) {
                     rooms.splice(roomID, 1); //TODO: find an efficient way to remove empty values
