@@ -39,6 +39,7 @@ function isValidNickname(name) {
 
 function updateGameList() {
     console.log(rooms);
+    rooms.forEach(function(room){console.log(room.players)});
     io.sockets.emit(
         'refresh',
         JSON.stringify(rooms.filter(function (room) {
@@ -105,7 +106,7 @@ app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, '../client', 'index.html'));
 });
 
-// Leaving the app.* methods here for now for compatibility
+// Leaving the app.get methods here for now for compatibility
 app.get('/room', function (req, res) {
     res.json(rooms);
 });
@@ -115,16 +116,14 @@ app.get('/getRoom/:id', function (req, res) {
     res.json(rooms[req.params.id]);
 });
 
-
+/*
 app.post('/newRoom', function (req, res) {    
     id += 1; //temp
     rooms[id] = new Room(id);
-   // io.socket.join(id.toString());
     
     rooms[id].addPlayer(req.body.nickname);
     res.end(JSON.stringify(id));
     updateGameList();
-   // io.sockets.emit('roomChanged', rooms[id].players);
 });
 
 app.post('/joinRoom', function (req, res) {
@@ -134,7 +133,6 @@ app.post('/joinRoom', function (req, res) {
         //playerList[socket.id] = new PlayerRecord(socket.id, nickname);
         if (rooms[roomID]) {
             if (rooms[roomID].players.length < rooms[roomID].roomCapacity) {
-                //socket.join(roomID.toString());
                 rooms[roomID].addPlayer(nickname);
                 res.end("ok"); //do we need code numbers for errors?
                 updateGameList();
@@ -149,6 +147,7 @@ app.post('/joinRoom', function (req, res) {
         res.end(JSON.stringify({error: "Nick in use"}));
     }
 });
+*/
 
 app.post('/leaveRoom', function(req, res){
     var roomID = req.params.roomID;
@@ -161,7 +160,6 @@ app.post('/leaveRoom', function(req, res){
     }
     
     delete playerList[socket.id];
-    //socket.leave(roomID.toString());
 });
 
 io.sockets.on('connection', function (socket) {
@@ -180,8 +178,8 @@ io.sockets.on('connection', function (socket) {
             rooms[roomID].addPlayer(playerNick);
             playerList[socket.id].joinedRoom = roomID;
             
-            socket.join(roomID.toString());
-            socket.emit("roomCreated", JSON.stringify(roomID));
+            socket.join(roomID);
+            socket.emit("roomCreated", roomID);
             updateGameList();
         }
         else {
@@ -192,35 +190,39 @@ io.sockets.on('connection', function (socket) {
     //TODO: update client code to use sockets and test out this code
     
     socket.on('joinRoom', function(msg){
+        //var msg = JSON.parse(msg);
         var roomID = parseInt(msg.roomID, 10);
-        var nickname = msg.nickname;
+        var nickname = msg.playerID;
         if(isValidNickname(nickname)){
-            //playerList[socket.id] = new PlayerRecord(socket.id, nickname);
+            playerList[socket.id] = new PlayerRecord(socket.id, nickname);
+
             if (rooms[roomID]) {
                 if (rooms[roomID].players.length < rooms[roomID].roomCapacity) {
-                    socket.join(roomID.toString()); //personal note: see if you can remove the toString()
+                    socket.join(roomID);
+                    playerList[socket.id].joinedRoom = roomID;
                     rooms[roomID].addPlayer(nickname);
-                    //socket.send("ok"); //What kind of confirmation method should we use?
+                    socket.emit("roomJoined", msg); //What kind of confirmation method should we use?
+                    io.to(roomID).emit('roomChanged', rooms[roomID].players);
                     updateGameList();
 
                 } else {
-                    socket.send(JSON.stringify({error: "Room is full"}));
+                    socket.emit("joinError", {error: "Room is full"});
                 }
             } else {
-                socket.send(JSON.stringify({error: "Room not found"}));
+                socket.emit("joinError", {error: "Room not found"});
             }
         } else {
-            socket.send(JSON.stringify({error: "Nick in use"}));
+            socket.emit("joinError", {error: "Nick in use"});
         }
     });
     
     socket.on('getRoom', function(msg){
         var roomID = parseInt(msg.id, 10); //TODO: change client code to send .roomID instead of just .id
-        socket.send(JSON.stringify(rooms[roomID]));
+        socket.emit('room', rooms[roomID]);
     });
     
     socket.on('getAllRooms', function(msg){
-        socket.send(JSON.stringify(rooms));
+        socket.emit('allRooms', rooms);
     });
     
     socket.on('leaveRoom', function (msg) {
@@ -229,9 +231,12 @@ io.sockets.on('connection', function (socket) {
         rooms[roomID].removePlayer(playerID); 
         
         if(rooms[roomID].players.length == 0) {
-            rooms[roomID] = null;
+            rooms.splice(roomID, 1);
+            updateGameList();
+        } else {
+            io.to(roomID).emit('roomChanged', rooms[roomID].players);
         }
-        socket.leave(roomID.toString());
+        socket.leave(roomID);
     });
     
     
@@ -241,7 +246,7 @@ io.sockets.on('connection', function (socket) {
         var playerID = msg.playerID;
         
         if (!rooms[roomID]) {
-            socket.send(JSON.stringify({error: "Room not found"}));
+            socket.emit("error", {error: "Room not found"});
         }
 
         var player = rooms[roomID].players.filter(function(player) {
@@ -252,7 +257,8 @@ io.sockets.on('connection', function (socket) {
         }
         
         player.switchTeams();
-        io.to(roomID.toString).emit('roomChanged', rooms[roomID].players);
+        //console.log(
+        io.to(roomID).emit('roomChanged', rooms[roomID].players);
     });
     
     
@@ -267,6 +273,8 @@ io.sockets.on('connection', function (socket) {
                 if(rooms[roomID].players.length == 0) {
                     rooms.splice(roomID, 1); //TODO: find an efficient way to remove empty values
                     updateGameList();
+                } else {
+                    io.to(roomID).emit('roomChanged', rooms[roomID].players); //This will probably have to be expanded on once the games are actually integrated
                 }
             }
             delete playerList[socket.id];
