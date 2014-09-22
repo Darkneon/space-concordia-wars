@@ -31,6 +31,7 @@
     <script src="games/iridescence/iridescence.js"></script>    
     <script src="games/mehdi-sez/mehdi-sez.js"></script>    
     <script src="games/tanks/tanks.js"></script>
+    <script src="games/podium/podium.js"></script>
     <script>
          
         $(document).ready(function() {
@@ -114,6 +115,11 @@
                 var m = new Tanks({ path: '/games/tanks'});
             });
 
+            $('#game4').on('click', function() {
+                $('body').html('<div id="theGame"></div>');
+                var m = new Podium({ path: '/games/podium'});
+            });
+
         });
     </script>
   </head>
@@ -134,6 +140,7 @@
         <a id='game1' class="btn btn-positive btn-block">Test Game #1</a>
         <a id='game2' class="btn btn-positive btn-block">Test Game #2</a>
         <a id='game3' class="btn btn-positive btn-block">Test Game #3</a>
+        <!--<a id='game4' class="btn btn-positive btn-block">Test Game #4</a>-->
 
         <div id='players-room' class="card"></div>            
     </div>
