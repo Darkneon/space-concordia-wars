@@ -7,14 +7,14 @@
     "test-win": "node node_modules/mocha/bin/_mocha tests/room.js"
   },
   "dependencies": {
-    "body-parser": "^1.8.1",
-    "express": "^4.8.8",
-    "node-uuid": "^1.4.1",
+    "body-parser": "1.8.1",
+    "express": "4.8.8",
+    "node-uuid": "1.4.1",
     "mocha": "1.21.4",
-    "path": "^0.4.9",
+    "path": "0.4.9",
     "request": "*",
     "should": "3.3.1",
-    "socket.io": "^1.1.0"
+    "socket.io": "1.1.0"
   },
   "author": "",
   "license": "MIT"
