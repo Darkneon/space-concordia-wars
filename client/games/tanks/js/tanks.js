@@ -94,6 +94,8 @@
             game.load.image('phaser_touch_control_touch_segment', game.options.path + '/assets/touch_segment.png');
             game.load.image('phaser_touch_control_touch', game.options.path + '/assets/touch.png');
 
+            game.load.spritesheet('coin', game.options.path + '/assets/coin.png', 32, 32);
+
             game.scale.scaleMode = Phaser.ScaleManager.EXACT_FIT;
             game.scale.minWidth = 240;
             game.scale.maxWidth = 640;
@@ -207,6 +209,13 @@
             cursors = game.input.keyboard.createCursorKeys();
             this.touchControl = this.game.plugins.add(Phaser.Plugin.TouchControl);
             this.touchControl.inputEnable();
+
+            //TODO: server should call when to add coins   
+            coin = game.add.sprite(200, 200, 'coin');
+            game.physics.enable(coin, Phaser.Physics.ARCADE);
+            coin.anchor.setTo(0.5, 0.5);
+            coin.animations.add('spin');
+            coin.animations.play('spin', 15, true);
         }
 
         function removeLogo () {
@@ -219,6 +228,9 @@
         function update () {
 
             game.physics.arcade.overlap(enemyBullets, tank, bulletHitPlayer, null, this);
+            game.physics.arcade.overlap(tank, coin, function() {
+                coin.kill();
+            }, null, this);
 
             enemiesAlive = 0;
 

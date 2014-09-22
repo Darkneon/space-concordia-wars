@@ -11,6 +11,11 @@ function preload() {
     game.load.image('starfield', 'assets/starfield.png');
     game.load.image('background', 'assets/background2.png');
 
+    game.load.image('phaser_touch_control_compass',  'http://localhost:3000/games/tanks/assets/compass_rose.png');
+    game.load.image('phaser_touch_control_touch_segment', 'http://localhost:3000/games/tanks/assets/touch_segment.png');
+    game.load.image('phaser_touch_control_touch', 'http://localhost:3000/games/tanks/assets/touch.png');
+
+
 }
 
 var player;
@@ -36,6 +41,8 @@ function create() {
 
     //  The scrolling starfield background
     starfield = game.add.tileSprite(0, 0, 800, 600, 'starfield');
+
+
 
     //  Our bullet group
     bullets = game.add.group();
@@ -98,6 +105,10 @@ function create() {
     //  And some controls to play the game with
     cursors = game.input.keyboard.createCursorKeys();
     fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
+    this.touchControl = this.game.plugins.add(Phaser.Plugin.TouchControl);
+    this.touchControl.inputEnable();
+    this.touchControl.settings.singleDirection = true;
     
 }
 
@@ -147,11 +158,11 @@ function update() {
     //  Reset the player, then check for movement keys
     player.body.velocity.setTo(0, 0);
 
-    if (cursors.left.isDown)
+    if (this.touchControl.cursors.left)
     {
         player.body.velocity.x = -200;
     }
-    else if (cursors.right.isDown)
+    else if ( this.touchControl.cursors.right)
     {
         player.body.velocity.x = 200;
     }
