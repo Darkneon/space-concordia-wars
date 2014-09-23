@@ -12,14 +12,16 @@
         }.bind(this));
       
         $.get(options.path + '/templates/current-player.mark', function(template) {                    
-            this._templates['current-player'] = template;             
+            this._templates['current-player'] = template;    
+            
+            $.get(options.path + '/templates/player.mark', function(template) {        
+                this._templates['player'] = template;            
+                this.onRoomChanged(options.players);
+            }.bind(this));
+        
         }.bind(this));
         
-        $.get(options.path + '/templates/player.mark', function(template) {        
-            this._templates['player'] = template;            
-            this.onRoomChanged(options.players);
-        }.bind(this));
-        
+      
         this._socket.on('playerJoined', this.onPlayerJoin.bind(this)); 
         this._socket.on('roomChanged', this.onRoomChanged.bind(this));
         
