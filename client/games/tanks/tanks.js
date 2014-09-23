@@ -13,7 +13,11 @@
 
     var Tanks = function(params) {
         load(params.path + '/js/plugins/phaser-touch-control.js');
-        load(params.path + '/js/tanks.js');
+        load(params.path + '/js/boot.js');
+        load(params.path + '/js/load.js');
+        load(params.path + '/js/wait.js');
+        load(params.path + '/js/game.js');
+        load(params.path + '/js/index.js');
         var t = new T(params);
     };
 
