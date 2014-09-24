@@ -48,12 +48,14 @@ function updateGameList() {
     );
 }
 
+/*
 function Room(id) {
     this.id = id;
     this.roomCapacity = 8;
     this.players = [];
     //maybe add a gamestatus enum
 }
+*/
 
 function PlayerRecord(id, nickname) {
     this.id = id;
@@ -77,6 +79,7 @@ Player.prototype.switchTeams = function () {
     this.team = this.team === "red" ? "blue" : "red";
 };
 
+/*
 //Perhaps create a prototype of room and pull up these methods
 Room.prototype.addPlayer = function (playerID) { //Add check for player, also the playerID -IS- the player nick, not a seperate ID
     if (this.players.length < this.roomCapacity) {
@@ -101,7 +104,7 @@ Room.prototype.removePlayer = function (playerID) {
     return false;
 };
 
-
+*/
 app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, '../client', 'index.html'));
 });
@@ -114,52 +117,6 @@ app.get('/room', function (req, res) {
 app.get('/getRoom/:id', function (req, res) {
     console.log(req.params.id);
     res.json(rooms[req.params.id]);
-});
-
-/*
-app.post('/newRoom', function (req, res) {    
-    id += 1; //temp
-    rooms[id] = new Room(id);
-    
-    rooms[id].addPlayer(req.body.nickname);
-    res.end(JSON.stringify(id));
-    updateGameList();
-});
-
-app.post('/joinRoom', function (req, res) {
-    var roomID = parseInt(req.body.roomID, 10);
-    var nickname = req.body.nickname;
-    if(isValidNickname(nickname)){
-        //playerList[socket.id] = new PlayerRecord(socket.id, nickname);
-        if (rooms[roomID]) {
-            if (rooms[roomID].players.length < rooms[roomID].roomCapacity) {
-                rooms[roomID].addPlayer(nickname);
-                res.end("ok"); //do we need code numbers for errors?
-                updateGameList();
-
-            } else {
-                res.end(JSON.stringify({error: "Room is full"}));
-            }
-        } else {
-            res.end(JSON.stringify({error: "Room not found"}));
-        }
-    } else {
-        res.end(JSON.stringify({error: "Nick in use"}));
-    }
-});
-*/
-
-app.post('/leaveRoom', function(req, res){
-    var roomID = req.params.roomID;
-    var playerID = req.params.playerID;
-    
-    rooms[roomID].removePlayer(playerID);
-    
-    if(rooms[roomID].players.length == 0) {
-        rooms.splice(roomID, 1);
-    }
-    
-    delete playerList[socket.id];
 });
 
 io.sockets.on('connection', function (socket) {

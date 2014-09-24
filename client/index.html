@@ -70,7 +70,8 @@
                 
             });
             
-            var joinGameComponent = new JoinRoom({ 
+            var joinGameComponent = new JoinRoom({
+                socket: socket,
                 path: '/components/join-room', 
                 elements: {
                     content: '#join-room',

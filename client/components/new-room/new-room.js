@@ -26,7 +26,6 @@
         
         if (!isNicknameValid(nickname)) {
             alert('Nickname is blank');
-            alert(nickname);
             return false;
         }
         
