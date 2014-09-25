@@ -2,6 +2,7 @@
 "use strict";
 
 var PORT = 3000;
+var Room = require('./custom_modules/Room.js');
 var express  = require('express');
 var bodyParser = require('body-parser');
 var path = require('path');
@@ -48,63 +49,12 @@ function updateGameList() {
     );
 }
 
-/*
-function Room(id) {
-    this.id = id;
-    this.roomCapacity = 8;
-    this.players = [];
-    //maybe add a gamestatus enum
-}
-*/
-
 function PlayerRecord(id, nickname) {
     this.id = id;
     this.nickname = nickname;
     this.joinedRoom = null;
 }
 
-function Player(nickname) {
-    this.id = nickname;
-    this.nickname = nickname;
-    this.team = 'red';
-    this.score = -1;
-}
-
-Player.prototype.reset = function () {
-    this.team = "";
-    this.score = -1;
-};
-
-Player.prototype.switchTeams = function () {
-    this.team = this.team === "red" ? "blue" : "red";
-};
-
-/*
-//Perhaps create a prototype of room and pull up these methods
-Room.prototype.addPlayer = function (playerID) { //Add check for player, also the playerID -IS- the player nick, not a seperate ID
-    if (this.players.length < this.roomCapacity) {
-        this.players.push(new Player(playerID));
-        return true;
-    }
-    return false;
-};
-
-Room.prototype.removePlayer = function (playerID) {
-   // if (this.players[playerID] != null) {
-   //     delete this.players[playerID];
-   //     return true;
-   // }
-    
-    for(var i = 0; i < this.players.length; i++){ //temporary implementation
-        if(this.players[i].id == playerID){
-            this.players.splice(i, 1);
-            return true;
-        }
-    }
-    return false;
-};
-
-*/
 app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, '../client', 'index.html'));
 });
@@ -147,7 +97,6 @@ io.sockets.on('connection', function (socket) {
     //TODO: update client code to use sockets and test out this code
     
     socket.on('joinRoom', function(msg){
-        //var msg = JSON.parse(msg);
         var roomID = parseInt(msg.roomID, 10);
         var nickname = msg.playerID;
         if(isValidNickname(nickname)){
@@ -214,7 +163,6 @@ io.sockets.on('connection', function (socket) {
         }
         
         player.switchTeams();
-        //console.log(
         io.to(roomID).emit('roomChanged', rooms[roomID].players);
     });
     

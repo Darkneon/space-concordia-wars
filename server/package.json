@@ -9,7 +9,6 @@
   "dependencies": {
     "body-parser": "1.8.1",
     "express": "4.8.8",
-    "node-uuid": "1.4.1",
     "mocha": "1.21.4",
     "path": "0.4.9",
     "request": "*",
