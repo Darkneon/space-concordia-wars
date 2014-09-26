@@ -20,7 +20,7 @@ server.listen(PORT, function () {
 
 var id = 0;
 var rooms = [];
-var playerList = [];
+var playerList = {};
 
 function isValidNickname(name) {
     console.log(name);
@@ -77,6 +77,7 @@ io.sockets.on('connection', function (socket) {
         var playerNick = msg.nickname;
         
         if(isValidNickname(playerNick)) {
+            console.log(playerNick, 'newRoom');
             var roomID = id;
             id += 1;
             playerList[socket.id] = new PlayerRecord(socket.id, playerNick);
@@ -86,6 +87,7 @@ io.sockets.on('connection', function (socket) {
             playerList[socket.id].joinedRoom = roomID;
             
             socket.join(roomID);
+            console.log(roomID);
             socket.emit("roomCreated", roomID);
             updateGameList();
         }
@@ -97,11 +99,15 @@ io.sockets.on('connection', function (socket) {
     //TODO: update client code to use sockets and test out this code
     
     socket.on('joinRoom', function(msg){
+        //var msg = JSON.parse(msg);
+        console.log('joinRoom', msg);
+
         var roomID = parseInt(msg.roomID, 10);
         var nickname = msg.playerID;
         if(isValidNickname(nickname)){
             playerList[socket.id] = new PlayerRecord(socket.id, nickname);
 
+            console.log(nickname, 'joined');
             if (rooms[roomID]) {
                 if (rooms[roomID].players.length < rooms[roomID].roomCapacity) {
                     socket.join(roomID);
@@ -168,8 +174,10 @@ io.sockets.on('connection', function (socket) {
     
     
     socket.on('disconnect', function () {
+
         console.log("Someone has disconnected");
         console.log(socket.id);
+
         if(playerList[socket.id] != null){
             if(playerList[socket.id].joinedRoom != null){
                 var roomID = playerList[socket.id].joinedRoom;
@@ -185,5 +193,28 @@ io.sockets.on('connection', function (socket) {
             delete playerList[socket.id];
         }
     });
-    
+
+    socket.on('player-update', function (data) {
+        if(typeof playerList[socket.id] !== 'undefined') {
+            playerList[socket.id].data = playerList[socket.id].data || {};
+            playerList[socket.id].data.score = data.score;
+            playerList[socket.id].data.highestJump = data.highestJump;
+            playerList[socket.id].data.status = data.status;
+
+            var allDead = 0;
+
+            for (var key in playerList) {
+                var player = playerList[key];
+                console.log('f', player);
+                if (player.data && player.data.status === 'dead') {
+                    allDead += 1;
+                }
+            }
+
+            if (allDead === Object.keys(playerList).length) {
+                io.emit('game-over-update', {highestJump: 'player1'});
+            }
+
+        }
+    });
 });
