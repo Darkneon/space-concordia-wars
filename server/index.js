@@ -2,7 +2,7 @@
 "use strict";
 
 var PORT = 3000;
-var Room = require('./custom_modules/Room.js');
+var Room = require('./models/Room.js');
 var express  = require('express');
 var bodyParser = require('body-parser');
 var path = require('path');
