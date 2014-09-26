@@ -64,6 +64,12 @@ app.get('/room', function (req, res) {
     res.json(rooms);
 });
 
+
+app.get('/getRooms', function (req, res) {
+    res.json(rooms);
+});
+
+
 app.get('/getRoom/:id', function (req, res) {
     console.log(req.params.id);
     res.json(rooms[req.params.id]);

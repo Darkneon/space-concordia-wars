@@ -2,11 +2,17 @@
 
 var Player = require("./Player.js");
 
-var RoomProto = function (){
+var Room = function (id) {
+    this.id = id;
+    this.players = [];
+    this.roomName = "Room " + id.toString();
+    this.roomReady = false;
+    this.roomMaster = null;
     this.roomCapacity = 8;
+    //maybe add a gamestatus enum
 }
 
-RoomProto.prototype.addPlayer = function (playerID) { //Add check for player, also the playerID -IS- the player nick, not a seperate ID
+Room.prototype.addPlayer = function (playerID) { //Add check for player, also the playerID -IS- the player nick, not a seperate ID
     if (this.players.length < this.roomCapacity && this.players[playerID] == null) {
         this.players.push(new Player(playerID));
         return true;
@@ -14,7 +20,7 @@ RoomProto.prototype.addPlayer = function (playerID) { //Add check for player, al
     return false;
 };
 
-RoomProto.prototype.removePlayer = function (playerID) {
+Room.prototype.removePlayer = function (playerID) {
     for(var i = 0; i < this.players.length; i++){
         if(this.players[i].id == playerID){
             this.players.splice(i, 1);
@@ -23,17 +29,5 @@ RoomProto.prototype.removePlayer = function (playerID) {
     }
     return false;
 };
-
-var Room = function (id) {
-    this.id = id;
-    this.players = [];
-    this.roomName = "Room " + id.toString();
-    this.roomReady = false;
-    this.roomMaster = null;
-    //maybe add a gamestatus enum
-}
-
-Room.prototype = new RoomProto();
-Room.prototype.constructor = Room;
 
 module.exports = Room;
