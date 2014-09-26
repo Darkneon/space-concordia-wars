@@ -5,7 +5,7 @@ var Room = require("../custom_modules/Room.js");
 /*
 describe('Room', function (done) {
     describe('GET Rooms', function (done) {
-        it('should return [] when there are no rooms', function (done) {
+        it.skip('should return [] when there are no rooms', function (done) {
             request.get('http://localhost:3000/room', function(error, response, body) {
                 response.should.be.json;
                 var result = JSON.parse(body);
