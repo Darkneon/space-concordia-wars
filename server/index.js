@@ -9,6 +9,7 @@ var path = require('path');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
+var assert = require('assert');
 
 app.use(express.static(path.join(__dirname, '../client')));
 app.use(bodyParser.urlencoded());
@@ -87,6 +88,7 @@ io.sockets.on('connection', function (socket) {
             var roomID = id;
             id += 1;
             playerList[socket.id] = new PlayerRecord(socket.id, playerNick);
+            playerList[socket.id].team = 'red';
             
             rooms[roomID] = new Room(roomID);
             rooms[roomID].addPlayer(playerNick);
@@ -113,11 +115,11 @@ io.sockets.on('connection', function (socket) {
         if(isValidNickname(nickname)){
             playerList[socket.id] = new PlayerRecord(socket.id, nickname);
 
-            console.log(nickname, 'joined');
             if (rooms[roomID]) {
                 if (rooms[roomID].players.length < rooms[roomID].roomCapacity) {
                     socket.join(roomID);
                     playerList[socket.id].joinedRoom = roomID;
+                    playerList[socket.id].team = rooms[roomID].players.length % 2 === 0 ? 'red' : 'blue';
                     rooms[roomID].addPlayer(nickname);
                     socket.emit("roomJoined", msg); //What kind of confirmation method should we use?
                     io.to(roomID).emit('roomChanged', rooms[roomID].players);
@@ -209,16 +211,34 @@ io.sockets.on('connection', function (socket) {
 
             var allDead = 0;
 
+            var redScore = 0;
+            var blueScore = 0;
+
             for (var key in playerList) {
                 var player = playerList[key];
-                console.log('f', player);
                 if (player.data && player.data.status === 'dead') {
                     allDead += 1;
+                }
+
+                assert(player.team === 'red' || player.team === 'blue');
+                if (player.data) {
+                    if (player.team === 'red') { redScore += player.data.score; }
+                    if (player.team === 'blue') { blueScore += player.data.score; }
                 }
             }
 
             if (allDead === Object.keys(playerList).length) {
-                io.emit('game-over-update', {highestJump: 'player1'});
+                console.log('player list = ', playerList);
+                io.emit('game-over-update', {
+                    highestJump: 'player1',
+                    redScore: redScore,
+                    blueScore: blueScore
+                });
+            } else {
+                io.emit('game-progress-update', {
+                    redScore: redScore,
+                    blueScore: blueScore
+                });
             }
 
         }

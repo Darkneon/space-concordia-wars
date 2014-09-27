@@ -1,7 +1,7 @@
 var mocha = require('mocha');
 var should = require('should');
 var request = require('request');
-var Room = require("../custom_modules/Room.js");
+var Room = require("../models/Room.js");
 /*
 describe('Room', function (done) {
     describe('GET Rooms', function (done) {
