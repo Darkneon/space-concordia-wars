@@ -125,8 +125,11 @@ Game.Play.prototype = {
 		noise.alpha = 0.2;
 		noise.animations.add('noiseloop',[0, 1, 2],15,true);
 		noise.animations.play('noiseloop');
-		
-	},
+
+        this.touchControl = this.game.plugins.add(Phaser.Plugin.TouchControl);
+        this.touchControl.inputEnable();
+        this.touchControl.settings.singleDirection = true;
+    },
 	
 	update: function(){
 		scoreV+=10
@@ -169,72 +172,73 @@ Game.Play.prototype = {
 			score.setText('SCORE: 0' + scoreV)
 		else
 			score.setText('SCORE: ' + scoreV)
-		
-		if (redKey.isDown) {
-			currColor = 0
-			player.animations.play('red');
-		}
-		if (greenKey.isDown) {
-			currColor = 1
-			player.animations.play('green');
-		}
-		if (blueKey.isDown) {
-			currColor = 2
-			player.animations.play('blue');
-		}
-		if (jumpkey.isDown && player.body.touching.down) {
-			jumptimer = 1;
-			player.body.velocity.y = -800;
-			jumpCount=1;
-			hitt = 0
-			jump.play('', 0, 0.3*muteValue,false);
-			player.scale.x = 0.9
-			player.scale.y = 1.1
-			
-		}
-		else if(jumpkey.isDown && (jumptimer == 0) && jumpCount == 0) {
-			player.body.velocity.y = -800;
-			jump.play('', 0, 0.3*muteValue,false);
-			jumpCount = 1
-			jumptimer = 1;
-			player.scale.x = 0.9
-			player.scale.y = 1.1
-		}
-		else if (jumpkey.isDown && (jumptimer != 0)) { 
-            if (jumptimer > 30) {
-                jumptimer = 0;
-				jumpCount = 1
-				player.scale.x = 1.0
-				player.scale.y = 1.0
+
+        if (game.input.activePointer.isDown) {
+            if (this.touchControl.cursors.left) {
+                currColor = 0
+                player.animations.play('red');
             }
-			else {
-					jumptimer++;
+            if (this.touchControl.cursors.down) {
+                currColor = 1
+                player.animations.play('green');
+            }
+            if (this.touchControl.cursors.right) {
+                currColor = 2
+                player.animations.play('blue');
+            }
+            if (this.touchControl.cursors.up && player.body.touching.down) {
+                jumptimer = 1;
+                player.body.velocity.y = -800;
+                jumpCount = 1;
+                hitt = 0
+                jump.play('', 0, 0.3 * muteValue, false);
+                player.scale.x = 0.9
+                player.scale.y = 1.1
+
+            }
+            else if (this.touchControl.cursors.up && (jumptimer == 0) && jumpCount == 0) {
+                player.body.velocity.y = -800;
+                jump.play('', 0, 0.3 * muteValue, false);
+                jumpCount = 1
+                jumptimer = 1;
+                player.scale.x = 0.9
+                player.scale.y = 1.1
+            }
+            else if (this.touchControl.cursors.up && (jumptimer != 0)) {
+                if (jumptimer > 30) {
+                    jumptimer = 0;
+                    jumpCount = 1
+                    player.scale.x = 1.0
+                    player.scale.y = 1.0
+                }
+                else {
+                    jumptimer++;
                     player.body.velocity.y = -500;
                 }
-        } 
-		else if(!jumpkey.isDown && (jumptimer == 0) && jumpCount == 1) {
-			jumpCount = 2
-			player.scale.x = 1.0
-			player.scale.y = 1.0
-		}
-		else if (jumptimer != 0) {
-			jumptimer = 0;
-			jumpCount = 1
-			player.scale.x = 1.0
-			player.scale.y = 1.0
-		}
-		else if(jumpkey.isDown && (jumptimer == 0) && jumpCount == 2) {
-			player.body.velocity.y = -800;
-			jump.play('', 0, 0.3*muteValue,false);
-			jumpCount = 3
-			player.scale.x = 0.9
-			player.scale.y = 1.1
-		}
-		else if(!jumpkey.isDown && jumpCount == 3) {
-			player.scale.x = 1.0
-			player.scale.y = 1.0
-		}
-            
+            }
+            else if (!this.touchControl.cursors.up && (jumptimer == 0) && jumpCount == 1) {
+                jumpCount = 2
+                player.scale.x = 1.0
+                player.scale.y = 1.0
+            }
+            else if (jumptimer != 0) {
+                jumptimer = 0;
+                jumpCount = 1
+                player.scale.x = 1.0
+                player.scale.y = 1.0
+            }
+            else if (this.touchControl.cursors.up && (jumptimer == 0) && jumpCount == 2) {
+                player.body.velocity.y = -800;
+                jump.play('', 0, 0.3 * muteValue, false);
+                jumpCount = 3
+                player.scale.x = 0.9
+                player.scale.y = 1.1
+            }
+            else if (!this.touchControl.cursors.up && jumpCount == 3) {
+                player.scale.x = 1.0
+                player.scale.y = 1.0
+            }
+        }
 		
 		//restart
 		if (player.position.y > h)
