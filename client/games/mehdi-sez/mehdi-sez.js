@@ -11,7 +11,8 @@
         headElement.appendChild(newScriptElement);
     }
     
-    var MehdiSez = function(params) {                      
+    var MehdiSez = function(params) {
+        load(params.commotPath + '/js/plugins/waiting-for-players.js');
         load(params.path + '/js/mehdi-sez.js');        
         var m = new M(params);
     }

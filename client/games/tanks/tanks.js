@@ -12,7 +12,8 @@
     };
 
     var Tanks = function(params) {
-        load(params.path + '/js/plugins/phaser-touch-control.js');
+        load(params.commonPath + '/js/plugins/waiting-for-players.js');
+        load(params.commonPath + '/js/plugins/phaser-touch-control.js');
         load(params.path + '/js/boot.js');
         load(params.path + '/js/load.js');
         load(params.path + '/js/wait.js');

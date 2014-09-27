@@ -8,28 +8,30 @@ Phaser.Plugin.WaitingForPlayers.prototype.constructor = Phaser.Plugin.WaitingFor
 Phaser.Plugin.WaitingForPlayers.prototype.init = function(options) {
     game.stage.backgroundColor = '#000';
 
-    //Stars
-    var smallStarsEmitter = game.add.emitter(game.world.centerX, game.world.centerY, 100);
-    smallStarsEmitter.makeParticles('stars');
-    smallStarsEmitter.setSize(900,600);
-    smallStarsEmitter.gravity = 0;
+    if (options.stars) {
+        //Stars
+        var smallStarsEmitter = game.add.emitter(game.world.centerX, game.world.centerY, 100);
+        smallStarsEmitter.makeParticles('stars');
+        smallStarsEmitter.setSize(900, 600);
+        smallStarsEmitter.gravity = 0;
 
-    smallStarsEmitter.minParticleScale = 0.2;
-    smallStarsEmitter.maxParticleScale = 0.5;
-    smallStarsEmitter.minParticleSpeed.setTo(-10, -10);
-    smallStarsEmitter.maxParticleSpeed.setTo(10, 10);
-    smallStarsEmitter.start(false, 5000, 50);
+        smallStarsEmitter.minParticleScale = 0.2;
+        smallStarsEmitter.maxParticleScale = 0.5;
+        smallStarsEmitter.minParticleSpeed.setTo(-10, -10);
+        smallStarsEmitter.maxParticleSpeed.setTo(10, 10);
+        smallStarsEmitter.start(false, 5000, 50);
 
-    var bigStarsEmitter = game.add.emitter(game.world.centerX, game.world.centerY, 10);
-    bigStarsEmitter.makeParticles('stars');
-    bigStarsEmitter.setSize(900,600);
-    bigStarsEmitter.gravity = 0;
+        var bigStarsEmitter = game.add.emitter(game.world.centerX, game.world.centerY, 10);
+        bigStarsEmitter.makeParticles('stars');
+        bigStarsEmitter.setSize(900, 600);
+        bigStarsEmitter.gravity = 0;
 
-    bigStarsEmitter.minParticleScale = 1.0;
-    bigStarsEmitter.maxParticleScale = 2.5;
-    bigStarsEmitter.minParticleSpeed.setTo(-10, -10);
-    bigStarsEmitter.maxParticleSpeed.setTo(10, 10);
-    bigStarsEmitter.start(false, 5000, 500);
+        bigStarsEmitter.minParticleScale = 1.0;
+        bigStarsEmitter.maxParticleScale = 2.5;
+        bigStarsEmitter.minParticleSpeed.setTo(-10, -10);
+        bigStarsEmitter.maxParticleSpeed.setTo(10, 10);
+        bigStarsEmitter.start(false, 5000, 500);
+    }
 
     //Text
     var halfHeight = Math.round(h / 2);
@@ -91,23 +93,25 @@ Phaser.Plugin.WaitingForPlayers.prototype.init = function(options) {
     mute.events.onInputDown.add(this.remute, this);
     mute.frame = 1 - muteValue
 */
-    //Scanlines
-    for (var i = 0; i < 100; i++) {
-        sc = game.add.sprite(0, i*6, "sc");
-        sc.scale.x = 1;
-        sc.scale.y = 1;
-        sc.fixedToCamera = true;
-        sc.alpha = 0.6;
-    }
+    if (options.noise) {
+        //Scanlines
+        for (var i = 0; i < 100; i++) {
+            sc = game.add.sprite(0, i * 6, "sc");
+            sc.scale.x = 1;
+            sc.scale.y = 1;
+            sc.fixedToCamera = true;
+            sc.alpha = 0.6;
+        }
 
-    //Noise
-    noise = game.add.sprite(0, 0, "noise");
-    noise.scale.x = 2;
-    noise.scale.y = 2;
-    noise.fixedToCamera = true;
-    noise.alpha = 0.2;
-    noise.animations.add('noiseloop',[0, 1, 2],15,true);
-    noise.animations.play('noiseloop');
+        //Noise
+        noise = game.add.sprite(0, 0, "noise");
+        noise.scale.x = 2;
+        noise.scale.y = 2;
+        noise.fixedToCamera = true;
+        noise.alpha = 0.2;
+        noise.animations.add('noiseloop', [0, 1, 2], 15, true);
+        noise.animations.play('noiseloop');
+    }
 };
 
 Phaser.Plugin.WaitingForPlayers.prototype.setSocket = function (socket) {

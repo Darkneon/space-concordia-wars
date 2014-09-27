@@ -100,25 +100,26 @@
             });
                 
                         
-            
+            var COMMON_PATH = '/games/common';
+
             $('#game1').on('click', function() {
                 $('body').html('<div id="theGame"></div>');
-                var iridescence = new Iridescence({ commonPath: '/games/common', path: '/games/iridescence'});
+                var iridescence = new Iridescence({ commonPath: COMMON_PATH, path: '/games/iridescence'});
             });
             
             $('#game2').on('click', function() {
                 $('body').html('<div id="theGame"></div>');
-                var m = new MehdiSez({ path: '/games/mehdi-sez'});
+                var m = new MehdiSez({ commonPath: COMMON_PATH, path: '/games/mehdi-sez'});
             });
 
             $('#game3').on('click', function() {
                 $('body').html('<div id="theGame"></div>');
-                var m = new Tanks({ path: '/games/tanks'});
+                var m = new Tanks({ commonPath: COMMON_PATH, path: '/games/tanks'});
             });
 
             $('#game4').on('click', function() {
                 $('body').html('<div id="theGame"></div>');
-                var m = new Podium({ path: '/games/podium'});
+                var m = new Podium({ commonPath: COMMON_PATH, path: '/games/podium'});
             });
 
         });
