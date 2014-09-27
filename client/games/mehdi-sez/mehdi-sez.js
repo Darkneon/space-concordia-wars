@@ -12,9 +12,13 @@
     }
     
     var MehdiSez = function(params) {
-        load(params.commotPath + '/js/plugins/waiting-for-players.js');
-        load(params.path + '/js/mehdi-sez.js');        
-        var m = new M(params);
+        load(params.commonPath + '/js/plugins/waiting-for-players.js');
+        load(params.path + '/js/boot.js');
+        load(params.path + '/js/load.js');
+        load(params.path + '/js/wait.js');
+        load(params.path + '/js/play.js');
+        load(params.path + '/js/game.js');
+        var m = new MehdiSezGame(params);
     }
     
     window.MehdiSez = MehdiSez;
