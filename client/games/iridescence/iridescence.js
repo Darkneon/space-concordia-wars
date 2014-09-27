@@ -11,7 +11,8 @@
         headElement.appendChild(newScriptElement);
     }
     
-    var Iridescence = function(params) {                      
+    var Iridescence = function(params) {
+        load(params.commonPath + '/js/plugins/waiting-for-players.js');
         load(params.path + '/js/load.js');
         load(params.path + '/js/wait.js');
         load(params.path + '/js/play.js');
