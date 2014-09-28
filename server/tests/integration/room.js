@@ -1,8 +1,10 @@
 var mocha = require('mocha');
 var should = require('should');
 var request = require('request');
-var Room = require("../models/Room.js");
-/*
+var Room = require("../../models/Room.js");
+
+
+
 describe('Room', function (done) {
     describe('GET Rooms', function (done) {
         it.skip('should return [] when there are no rooms', function (done) {
@@ -15,6 +17,11 @@ describe('Room', function (done) {
             });
         });
     });
+
+    //game-level ready
+    //start game
+    //go to next game
+
 });
-*/
+
 

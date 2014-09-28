@@ -10,6 +10,12 @@ var Room = function (id) {
     //maybe add a gamestatus enum
 }
 
+Room.prototype.allPlayersReady = function() {
+   return this.players.every(function (player) {
+       return player.isReady;
+   });
+};
+
 Room.prototype.addPlayer = function (playerID) { //Add check for player, also the playerID -IS- the player nick, not a seperate ID
     if (this.players.length < this.roomCapacity && this.players[playerID] == null) {
         this.players.push(new Player(playerID));
