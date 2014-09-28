@@ -53,6 +53,7 @@
                     }, 'json');
                     
                     $.get('/getRoom/' + roomID, {}, function(result) {
+                        console.log(result);
                         $('#join-room').hide();
                         $('#new-room').hide();
                         var playersRoomComponent = new PlayersRoom({
@@ -60,6 +61,7 @@
                             path: '/components/players-room',
                             nickname: nickname,
                             roomID: roomID,
+                            roomName: result.roomName,
                             players: result.players,
                             elements: {
                                 content: '#players-room'
@@ -90,6 +92,7 @@
                             path: '/components/players-room',
                             nickname: nickname,
                             roomID: roomID,
+                            roomName: result.roomName,
                             players: result.players,
                             elements: {
                                 content: '#players-room'

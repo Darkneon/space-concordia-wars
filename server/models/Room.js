@@ -1,5 +1,3 @@
-//MORNING TODO: implement rooms as an object 
-
 var Player = require("./Player.js");
 
 var Room = function (id) {
