@@ -1,11 +1,11 @@
 
-BasicGame.Game = function (game) {
+Game.Play = function (game) {
 
 };
 
-BasicGame.Game.prototype = {
+Game.Play.prototype = {
 
-	create: function () {
+    create: function () {
 
         //keep the pixel perfect lines of the background mesh
         this.stage.smoothed = false;
@@ -18,18 +18,16 @@ BasicGame.Game.prototype = {
         //the background mesh
         this.bckGraph = this.add.sprite(30,80,'spriteSet','bck');
 
-        BasicGame.score = 0; //initialize score
-        
+        Game.score = 0; //initialize score
+
         this.initSnake(3);
         this.initSnakeTrail(100);
 
-        this.initTimer(BasicGame.timerDelay);
+        this.initTimer(Game.timerDelay);
 
         this.initFood();
 
         this.initScoreText();
-
-        this.initBackButton();
 
         this.initOnScreenControls();
 
@@ -38,13 +36,12 @@ BasicGame.Game.prototype = {
         this.cursors = this.input.keyboard.createCursorKeys();
 
         this.add.tween(this.stateGroup).from({x:-500},500,Phaser.Easing.Sinusoidal.InOut,true);
-	},
+    },
 
     addToStateGroup : function(){
-        
+
         this.stateGroup.add(this.bckGraph);
         this.stateGroup.add(this.scoreText);
-        this.stateGroup.add(this.backButton);
         this.stateGroup.add(this.osc);
         this.stateGroup.add(this.soundButton);
         for(var i=0;i<this.snake.length;i++){
@@ -82,23 +79,23 @@ BasicGame.Game.prototype = {
         //move the snake by basically moving the tail to its head position + direction of movement
 
         var length = this.snake.length;
-        this.leaveTrail(BasicGame.timerDelay,BasicGame.trailno);
+        this.leaveTrail(Game.timerDelay,Game.trailno);
         var temp;
         switch(this.snakeDirection){
             case 'up'    :      this.snake[length-1].y = this.snake[0].y - 15;
-                                this.snake[length-1].x = this.snake[0].x;
-                                break;
+                this.snake[length-1].x = this.snake[0].x;
+                break;
             case 'down'  :      this.snake[length-1].y = this.snake[0].y + 15;
-                                this.snake[length-1].x = this.snake[0].x;
-                                break;
+                this.snake[length-1].x = this.snake[0].x;
+                break;
             case 'left'  :      this.snake[length-1].x = this.snake[0].x - 15;
-                                this.snake[length-1].y = this.snake[0].y;
-                                break;
+                this.snake[length-1].y = this.snake[0].y;
+                break;
             case 'right' :      this.snake[length-1].x = this.snake[0].x + 15;
-                                this.snake[length-1].y = this.snake[0].y;
-                                break; 
+                this.snake[length-1].y = this.snake[0].y;
+                break;
         }
-        
+
         if(this.snake[length-1].x>this.bckGraph.x+this.bckGraph.width-14){
             this.snake[length-1].x = this.bckGraph.x;
         }
@@ -123,14 +120,14 @@ BasicGame.Game.prototype = {
             if(this.playSounds==true){
                 this.fx.play();
             }
-            
+
             this.initFood();
-            
+
             this.growSnake();
 
-            BasicGame.score++;
+            Game.score++;
 
-            this.scoreText.setText(BasicGame.textList.score + ' : '+BasicGame.score);
+            this.scoreText.setText(Game.textList.score + ' : '+Game.score);
         }
         temp = this.snake.pop();
         this.snake.unshift(temp);
@@ -150,7 +147,7 @@ BasicGame.Game.prototype = {
         tweenControl.onComplete.add(function(){
             this.tweenedFood.exists = false;
         },this);
-    },  
+    },
 
     leaveTrail : function(t,n){
         //leaving a trail
@@ -203,19 +200,12 @@ BasicGame.Game.prototype = {
         boundsB.height = boundsB.width = 13;
         boundsB.x++;
         boundsB.y++;
-        return Phaser.Rectangle.intersects(boundsA,boundsB); 
-    },
-
-    initBackButton : function(){
-        this.backButton = this.add.bitmapText(0,30,'olijo',BasicGame.textList.back,28);
-        this.backButton.x = this.bckGraph.x + this.bckGraph.width - this.backButton.textWidth;
-        this.backButton.inputEnabled = true;
-        this.backButton.events.onInputDown.add(this.quitGame,this);
+        return Phaser.Rectangle.intersects(boundsA,boundsB);
     },
 
     initScoreText : function(){
-        this.scoreText = this.add.bitmapText(30,30,'olijo',BasicGame.textList.score+' : 0',28);
-        
+        this.scoreText = this.add.bitmapText(30,30,'olijo',Game.textList.score+' : 0',28);
+
     },
 
     initFood : function(){
@@ -252,7 +242,7 @@ BasicGame.Game.prototype = {
         this.snakeTrail.createMultiple(no,'spriteSet','b',false);
     },
 
-	update: function () {
+    update: function () {
         //change snake direction 
 
         if(this.canMove==true){
@@ -270,7 +260,7 @@ BasicGame.Game.prototype = {
                     this.snakeDirection = 'down';
                     this.canMove=false;
                 }
-                
+
             }
             if (this.cursors.left.isDown)
             {
@@ -287,7 +277,7 @@ BasicGame.Game.prototype = {
                 }
             }
         }
-	},
+    },
 
     oscChange : function(controls,pointer){
         //change snake direction
@@ -329,10 +319,10 @@ BasicGame.Game.prototype = {
             //go to Endscreen
             this.state.start('EndScreen');
         },this);
-        
-    },  
 
-	quitGame: function (pointer) {
+    },
+
+    quitGame: function (pointer) {
 
         var tweenControl = this.add.tween(this.stateGroup).to({x:this.world.width+500},500,Phaser.Easing.Sinusoidal.InOut,true);
         tweenControl.onComplete.add(function(){
@@ -340,6 +330,5 @@ BasicGame.Game.prototype = {
             this.state.start('MainMenu');
         },this);
 
-	}
-
+    }
 };
