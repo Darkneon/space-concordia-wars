@@ -32,6 +32,7 @@
     <script src="games/mehdi-sez/mehdi-sez.js"></script>    
     <script src="games/tanks/tanks.js"></script>
     <script src="games/invaders/invaders.js"></script>
+    <script src="games/snake/snake.js"></script>
     <script src="games/podium/podium.js"></script>
     <script>
          
@@ -126,6 +127,11 @@
                 var m = new Invaders({ commonPath: COMMON_PATH, path: '/games/invaders'});
             });
 
+            $('#game5').on('click', function() {
+                $('body').html('<div id="theGame"></div>');
+                var m = new Snake({ commonPath: COMMON_PATH, path: '/games/snake'});
+            });
+
 //            $('#game4').on('click', function() {
 //                $('body').html('<div id="theGame"></div>');
 //                var m = new Podium({ commonPath: COMMON_PATH, path: '/games/podium'});
@@ -152,6 +158,7 @@
         <a id='game2' class="btn btn-positive btn-block">Test Game #2</a>
         <a id='game3' class="btn btn-positive btn-block">Test Game #3</a>
         <a id='game4' class="btn btn-positive btn-block">Test Game #4</a>
+        <a id='game5' class="btn btn-positive btn-block">Test Game #5</a>
         <!--<a id='game4' class="btn btn-positive btn-block">Test Game #4</a>-->
 
         <div id='players-room' class="card"></div>            
