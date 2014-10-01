@@ -2,7 +2,12 @@
 "use strict";
 
 var PORT = 3000;
+
+/*Models and Services*/
 var Room = require('./models/Room.js');
+var PreGameServices = require('./services/pregame-services.js');
+
+/*Modules*/
 var express  = require('express');
 var bodyParser = require('body-parser');
 var path = require('path');
@@ -14,6 +19,17 @@ var assert = require('assert');
 app.use(express.static(path.join(__dirname, '../client')));
 app.use(bodyParser.urlencoded());
 
+var preGameServices = new PreGameServices({
+                events: {
+                    onPlayerReadySend: function (error, room, playerID) {
+                        io.to(room.id).emit('game-player-ready-update', rooms[room.id].players[playerID].nickname);
+                    },
+                    
+                    onAllPlayersReadySend: function(error, room){
+                        io.to(room.id).emit('game-start');
+                    }
+                }
+});
 
 server.listen(PORT, function () {
     console.log('And we are live on port %d', server.address().port);
@@ -45,7 +61,7 @@ function updateGameList() {
     io.sockets.emit(
         'refresh',
         JSON.stringify(rooms.filter(function (room) {
-            return room.players.length < room.roomCapacity;
+            return room.numOfJoinedPlayers < room.roomCapacity;
         }))
     );
 }
@@ -116,10 +132,10 @@ io.sockets.on('connection', function (socket) {
             playerList[socket.id] = new PlayerRecord(socket.id, nickname);
 
             if (rooms[roomID]) {
-                if (rooms[roomID].players.length < rooms[roomID].roomCapacity) {
+                if (rooms[roomID].numOfJoinedPlayers < rooms[roomID].roomCapacity) {
                     socket.join(roomID);
                     playerList[socket.id].joinedRoom = roomID;
-                    playerList[socket.id].team = rooms[roomID].players.length % 2 === 0 ? 'red' : 'blue';
+                    playerList[socket.id].team = rooms[roomID].numOfJoinedPlayers % 2 === 0 ? 'red' : 'blue';
                     rooms[roomID].addPlayer(nickname);
                     socket.emit("roomJoined", msg); //What kind of confirmation method should we use?
                     io.to(roomID).emit('roomChanged', rooms[roomID].players);
@@ -150,7 +166,7 @@ io.sockets.on('connection', function (socket) {
         var playerID = msg.playerID;
         rooms[roomID].removePlayer(playerID); 
         
-        if(rooms[roomID].players.length == 0) {
+        if(rooms[roomID].numOfJoinedPlayers == 0) {
             rooms.splice(roomID, 1);
             updateGameList();
         } else {
@@ -168,10 +184,13 @@ io.sockets.on('connection', function (socket) {
         if (!rooms[roomID]) {
             socket.emit("error", {error: "Room not found"});
         }
+        
+        var player = rooms[roomID].players[playerID] || null;
 
-        var player = rooms[roomID].players.filter(function(player) {
-            return player.nickname === playerID;
-        })[0];
+        //var player = rooms[roomID].players.filter(function(player) {
+        //    return player.nickname === playerID;
+        //})[0];
+        
         if (!player) {
             socket.send(JSON.stringify({error: "Player not found"}));
         }
@@ -191,7 +210,7 @@ io.sockets.on('connection', function (socket) {
                 var roomID = playerList[socket.id].joinedRoom;
                 rooms[roomID].removePlayer(playerList[socket.id].nickname);
             
-                if(rooms[roomID].players.length == 0) {
+                if(rooms[roomID].numOfJoinedPlayers == 0) {
                     rooms.splice(roomID, 1); //TODO: find an efficient way to remove empty values
                     updateGameList();
                 } else {
@@ -243,4 +262,13 @@ io.sockets.on('connection', function (socket) {
 
         }
     });
+    
+    socket.on('game-player-ready', function(data) {
+        if(playerList[socket.id] != null){
+            var playerID = playerList[socket.id].nickname;
+            var roomID = playerList[socket.id].joinedRoom;
+            preGameServices.setPlayerReady(rooms[roomID], playerID);
+        }
+    });
+    
 });

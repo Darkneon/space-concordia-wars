@@ -9,6 +9,7 @@ function Player(nickname) {
 Player.prototype.reset = function () {
     this.team = "red";
     this.score = -1;
+    this.isReady = false;
 };
 
 Player.prototype.switchTeams = function () {

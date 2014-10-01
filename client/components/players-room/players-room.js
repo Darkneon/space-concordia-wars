@@ -50,10 +50,13 @@
         this._$contentElement.empty();
         this._$contentElement.append(this._templates['room']);
         //$Mark.up(this.templates['room'], {roomName: this._roomName});
-        data.forEach(function(player) {
-            var template = player.nickname === this._nickname ? 'current-player' : 'player';
-            $('#' + player.team + '-team').after(Mark.up(this._templates[template], player));
-        }, this);        
+        for (var playerID in data) {
+            if(data.hasOwnProperty(playerID)){
+                var template = data[playerID].nickname === this._nickname ? 'current-player' : 'player';
+                $('#' + data[playerID].team + '-team').after(Mark.up(this._templates[template], data[playerID]));
+            }
+        }
+        //}, this);       
     }
             
     window.PlayersRoom = PlayersRoom;

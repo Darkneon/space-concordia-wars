@@ -72,7 +72,7 @@
             var template = that._templatesCache['room'];
             var data = {
                 id: room.id,
-                players: room.players.length,
+                players: room.numOfJoinedPlayers,
                 capacity: room.roomCapacity
             };
 
