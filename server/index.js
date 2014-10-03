@@ -270,5 +270,8 @@ io.sockets.on('connection', function (socket) {
             preGameServices.setPlayerReady(rooms[roomID], playerID);
         }
     });
-    
+
+    socket.on('start-game', function(data) {
+        console.log('starting - game');
+    });
 });

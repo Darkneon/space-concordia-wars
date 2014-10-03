@@ -1,5 +1,8 @@
 <ul class="table-view">
-    <li id="room-name" class="table-view-cell table-view-divider">{{roomName}}</li>
+    <li id="room-name" class="table-view-cell table-view-divider">
+        {{roomName}}
+        <button id="start-game-btn" class="btn btn-positive">Start Game</button>
+    </li>
     <li id="red-team" class="table-view-cell table-view-divider">Red Team:</li>                    
     <li id="blue-team" class="table-view-cell table-view-divider">Blue Team:</li>                
 </ul>

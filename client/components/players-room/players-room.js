@@ -33,7 +33,7 @@
         this._socket.on('roomChanged', this.onRoomChanged.bind(this));
         
         this._$contentElement.on('click', '#change-team-btn', this.onChangeTeamClick.bind(this));
-        //this._$contentElement.on('click', '#start-game-btn', this.onStartGameClick.bind(this));
+        this._$contentElement.on('click', '#start-game-btn', this.onStartGameClick.bind(this));
     }
 
     PlayersRoom.prototype.onChangeTeamClick = function() { 
@@ -57,7 +57,11 @@
             }
         }
         //}, this);       
-    }
+    };
+
+    PlayersRoom.prototype.onStartGameClick = function() {
+        this._socket.emit('start-game',  { playerID:  this._nickname, roomID: this._roomID});
+    };
             
     window.PlayersRoom = PlayersRoom;
 })(window);
