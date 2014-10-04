@@ -16,7 +16,7 @@
     <link href="css/main.css" rel="stylesheet">
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script type="text/javascript" src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 
     <!-- Include the compiled Ratchet JS -->
     <script src="lib/ratchet/js/ratchet.js"></script>      
@@ -109,27 +109,27 @@
 
             $('#game1').on('click', function() {
                 $('body').html('<div id="theGame"></div>');
-                var iridescence = new Iridescence({ commonPath: COMMON_PATH, path: '/games/iridescence'});
+                var iridescence = new Iridescence({socket: socket, commonPath: COMMON_PATH, path: '/games/iridescence'});
             });
             
             $('#game2').on('click', function() {
                 $('body').html('<div id="theGame"></div>');
-                var m = new MehdiSez({ commonPath: COMMON_PATH, path: '/games/mehdi-sez'});
+                var m = new MehdiSez({socket: socket, commonPath: COMMON_PATH, path: '/games/mehdi-sez'});
             });
 
             $('#game3').on('click', function() {
                 $('body').html('<div id="theGame"></div>');
-                var m = new Tanks({ commonPath: COMMON_PATH, path: '/games/tanks'});
+                var m = new Tanks({socket: socket, commonPath: COMMON_PATH, path: '/games/tanks'});
             });
 
             $('#game4').on('click', function() {
                 $('body').html('<div id="theGame"></div>');
-                var m = new Invaders({ commonPath: COMMON_PATH, path: '/games/invaders'});
+                var m = new Invaders({socket: socket, commonPath: COMMON_PATH, path: '/games/invaders'});
             });
 
             $('#game5').on('click', function() {
                 $('body').html('<div id="theGame"></div>');
-                var m = new Snake({ commonPath: COMMON_PATH, path: '/games/snake'});
+                var m = new Snake({socket: socket, commonPath: COMMON_PATH, path: '/games/snake'});
             });
 
             var gameLoader = new GameLoader({

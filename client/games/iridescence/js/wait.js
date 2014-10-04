@@ -18,9 +18,9 @@ Game.Wait.prototype = {
 	},
 
 	update: function() {
-		if (spaceKey.isDown) {
+		//if (spaceKey.isDown) {
             game.state.start('Play');
-		}
+	//	}
 	}
 };
 

@@ -18,29 +18,29 @@ Game.Play.prototype = {
 		hitt = 0
 		jumptimer = 0;
 		
-		//Stars
+//		Stars
 		var emitterA = game.add.emitter(game.world.centerX, game.world.centerY, 100);
 		emitterA.makeParticles('stars');
 		emitterA.setSize(900,600);
 		emitterA.gravity = 0;
-		
+
 		emitterA.minParticleScale = 0.2
 		emitterA.maxParticleScale = 0.5
 		emitterA.minParticleSpeed.setTo(-10, -10);
 		emitterA.maxParticleSpeed.setTo(10, 10);
 		emitterA.start(false, 5000, 50);
-		
+
 		var emitterB = game.add.emitter(game.world.centerX, game.world.centerY, 10);
 		emitterB.makeParticles('stars');
 		emitterB.setSize(w,h);
 		emitterB.gravity = 0;
-		
+
 		emitterB.minParticleScale = 1.0
 		emitterB.maxParticleScale = 2.5
 		emitterB.minParticleSpeed.setTo(-10, -10);
 		emitterB.maxParticleSpeed.setTo(10, 10);
 		emitterB.start(false, 5000, 500);
-		
+//
 		//Audio
 		jump = game.add.audio('jump');
 		hit = game.add.audio('hit');
@@ -56,7 +56,7 @@ Game.Play.prototype = {
 		mute.frame = 1 - muteValue
 
 		//Player
-		player = game.add.sprite(100, h - 200, "player");
+		player = game.add.sprite(100, h - 400, "player");
 		game.physics.arcade.enable(player);
 		player.body.bounce.y = 0;
 		player.body.gravity.y = 2000;
@@ -106,25 +106,6 @@ Game.Play.prototype = {
 		fps = game.add.text(10, 40, 'FPS: 0', {fill: '#FDFFC4' });
 		fps.font = 'Press Start 2P';
 		fps.fontSize = '20px';
-		
-		
-		//Scanlines
-		for (var i = 0; i < 300; i++) {
-			sc = game.add.sprite(0, i*6, "sc");
-			sc.scale.x = 1;
-			sc.scale.y = 1;
-			sc.fixedToCamera = true;		
-			sc.alpha = 0.6;		
-		}
-		
-		//Noise
-		noise = game.add.sprite(0, 0, "noise");
-		noise.scale.x = 2;
-		noise.scale.y = 2;
-		noise.fixedToCamera = true;
-		noise.alpha = 0.2;
-		noise.animations.add('noiseloop',[0, 1, 2],15,true);
-		noise.animations.play('noiseloop');
 
         this.touchControl = this.game.plugins.add(Phaser.Plugin.TouchControl);
         this.touchControl.inputEnable();

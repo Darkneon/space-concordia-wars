@@ -12,9 +12,9 @@ Game.Load.prototype = {
         game.load.image('starfield', game.options.path + '/assets/starfield.png');
         game.load.image('background', game.options.path + '/assets/background2.png');
 
-        game.load.image('phaser_touch_control_compass',  'http://localhost:3000/games/tanks/assets/compass_rose.png');
-        game.load.image('phaser_touch_control_touch_segment', 'http://localhost:3000/games/tanks/assets/touch_segment.png');
-        game.load.image('phaser_touch_control_touch', 'http://localhost:3000/games/tanks/assets/touch.png');
+        game.load.image('phaser_touch_control_compass',  game.options.commonPath + '/assets/compass_rose.png');
+        game.load.image('phaser_touch_control_touch_segment', game.options.commonPath + '/assets/touch_segment.png');
+        game.load.image('phaser_touch_control_touch', game.options.commonPath + '/assets/touch.png');
     },
     create: function() {
         this.game.state.start('Wait');
