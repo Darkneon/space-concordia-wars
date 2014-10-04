@@ -1,7 +1,19 @@
 (function() {
     var Podium = function () {
-        var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'theGame', { create: create, update: update });
+        var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'theGame', { create: create, update: update, render: render });
         function create() {
+            game.time.advancedTiming = true;
+
+            game.scale.scaleMode = Phaser.ScaleManager.EXACT_FIT;
+            game.scale.minWidth = 240;
+            game.scale.maxWidth = 640;
+            game.scale.minHeight = 170;
+            game.scale.maxHeight = 500;
+            game.scale.pageAlignHorizontally = true;
+            game.scale.pageAlignVertically = true;
+            game.scale.setScreenSize();
+
+            game.stage.backgroundColor = '#000';
 
             var winner = game.add.text(game.width / 2, game.height / 2, 'RED Wins!', {fill: '#f00' });
             winner.anchor.setTo(0.5, 0.5);
@@ -42,7 +54,7 @@
 
             //Registering EPSy plugin
             var epsy = game.plugins.add(Phaser.Plugin.EPSY);
-            var config = [{"pos":{"x":200,"y":50},"posVar":{"x":0,"y":0},"speed":180,"speedVar":50,"angle":-0.42402826855123976,"angleVar":-176.81978798586573,"life":4.5,"lifeVar":1,"radius":7,"radiusVar":2,"textureAdditive":false,"startScale":1,"startScaleVar":0,"endScale":2,"endScaleVar":2,"startColor":[255,0,0,1],"startColorVar":[255,0,0,0],"endColor":[255,0,0,1],"endColorVar":[255,0,0,1],"colorList":[],"gravity":{"x":0,"y":-90},"radialAccel":0,"radialAccelVar":0,"tangentialAccel":0,"tangentialAccelVar":0,"totalParticles":283,"emissionRate":132.78798586572438,"xEquation":"","yEquation":"","textureEnabled":true,"active":true,"duration":null,"id":"f","aFactor":{"x":0,"y":0},"xFactor":{"x":0,"y":0},"border":{"top":250.30270906949352,"left":353.35689045936397,"bottom":250.4570082449941,"right":372.20259128386334},"zIndex":0}];
+            var config = [{"pos":{"x":200,"y":50},"posVar":{"x":0,"y":0},"speed":180,"speedVar":50,"angle":-0.42402826855123976,"angleVar":-176.81978798586573,"life":3.5,"lifeVar":1,"radius":15,"radiusVar":1,"textureAdditive":false,"startScale":1,"startScaleVar":0,"endScale":2,"endScaleVar":2,"startColor":[255,0,0,1],"startColorVar":[255,0,0,0],"endColor":[255,0,0,1],"endColorVar":[255,0,0,1],"colorList":[],"gravity":{"x":0,"y":-90},"radialAccel":0,"radialAccelVar":0,"tangentialAccel":0,"tangentialAccelVar":0,"totalParticles":50,"emissionRate":100.78798586572438,"xEquation":"","yEquation":"","textureEnabled":true,"active":true,"duration":null,"id":"f","aFactor":{"x":0,"y":0},"xFactor":{"x":0,"y":0},"border":{"top":250.30270906949352,"left":353.35689045936397,"bottom":250.4570082449941,"right":372.20259128386334},"zIndex":0}];
 
             //creating a particle system from a given configuration
             var particleSystem1 = epsy.loadSystem(config, 200, 200);
@@ -58,6 +70,10 @@
 
         function update() {
 
+        }
+
+        function render() {
+            game.debug.text(game.time.fps || '--', 2, 14, "#00ff00", '24px Courier');
         }
     };
 
