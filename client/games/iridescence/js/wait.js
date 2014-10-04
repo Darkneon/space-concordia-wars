@@ -4,7 +4,7 @@ Game.Wait.prototype = {
 	create: function () {
 		spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
-        this.waitingForPlayers = this.game.plugins.add(Phaser.Plugin.WaitingForPlayers, { title: 'Iridescence' });
+        this.waitingForPlayers = this.game.plugins.add(Phaser.Plugin.WaitingForPlayers, { title: 'Iridescence' , socket: game.options.socket});
 	},
 
 	listener: function() {

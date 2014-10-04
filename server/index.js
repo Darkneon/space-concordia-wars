@@ -28,7 +28,8 @@ var preGameServices = new PreGameServices({
                     onAllPlayersReadySend: function(error, room){
                         io.to(room.id).emit('game-start');
                     }
-                }
+                },
+                io: io,
 });
 
 server.listen(PORT, function () {
@@ -273,5 +274,6 @@ io.sockets.on('connection', function (socket) {
 
     socket.on('start-game', function(data) {
         console.log('starting - game');
+        preGameServices.startNextGame(rooms[data.roomID]);
     });
 });

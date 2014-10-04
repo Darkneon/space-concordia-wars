@@ -34,11 +34,12 @@
     <script src="games/invaders/invaders.js"></script>
     <script src="games/snake/snake.js"></script>
     <script src="games/podium/podium.js"></script>
+    <script src="lib/game-loader.js"></script>
+
     <script>
-         
         $(document).ready(function() {
             var socket = io.connect('/');
-            
+
             var newRoomComponent = new NewRoom({
                 socket: socket,
                 path: '/components/new-room', 
@@ -103,7 +104,6 @@
                     }, 'json');
                 }
             });
-                
                         
             var COMMON_PATH = '/games/common';
 
@@ -130,6 +130,28 @@
             $('#game5').on('click', function() {
                 $('body').html('<div id="theGame"></div>');
                 var m = new Snake({ commonPath: COMMON_PATH, path: '/games/snake'});
+            });
+
+            var gameLoader = new GameLoader({
+                socket: socket,
+                games: {
+                    iridescence: {
+                        constructor: Iridescence,
+                        options: { socket: socket, commonPath: COMMON_PATH, path: '/games/iridescence' }
+                    },
+                    mehdisez: {
+                        constructor: MehdiSez,
+                        options: { commonPath: COMMON_PATH, path: '/games/mehdi-sez' }
+                    },
+                    tanks: {
+                        constructor: Tanks,
+                        options: { commonPath: COMMON_PATH, path: '/games/tanks' }
+                    },
+                    invaders: {
+                        constructor: Invaders,
+                        options: { commonPath: COMMON_PATH, path: '/games/invaders' }
+                    }
+                }
             });
 
 //            $('#game4').on('click', function() {

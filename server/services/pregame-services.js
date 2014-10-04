@@ -5,9 +5,14 @@ var PreGameService = function(options) {
     options = options || {};
     options.events = options.events || {};
 
+
+    //this.socket = options.socket;
+    this.io = options.io;
+
     this.events = {
         onPlayerReadySend: options.events.onPlayerReadySend || NOOP,
-        onAllPlayersReadySend: options.events.onAllPlayersReadySend || NOOP
+        onAllPlayersReadySend: options.events.onAllPlayersReadySend || NOOP,
+        onGameOverOrGameStart: options.events.onSend || NOOP
     };
 };
 
@@ -18,5 +23,14 @@ PreGameService.prototype.setPlayerReady = function(room, playerId) {
         this.events.onAllPlayersReadySend(null, room);
     }
 };
+
+PreGameService.prototype.startNextGame = function(room) {
+    var game = room.getNextGame();
+    if (game) {
+        console.log('load-game');
+        this.io.to(room.id).emit('load-game', {currentGame: game});
+    }
+    // else to some logging
+}
 
 module.exports = PreGameService;

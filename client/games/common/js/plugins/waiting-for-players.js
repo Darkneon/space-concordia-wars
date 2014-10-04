@@ -48,6 +48,8 @@ Phaser.Plugin.WaitingForPlayers.prototype.init = function(options) {
     game.add.tween(this.waiting).to({ alpha: 0.1 }, 500, Phaser.Easing.Linear.None)
         .to({ alpha: 1 }, 500, Phaser.Easing.Linear.None).loop().start();
 
+    options.socket.emit('game-player-ready');
+
     /*
     label3 = game.add.text(650, 550, 'Pharm (@Ph4rm)', {fill: '#FDFFC4' });
     label3.font = 'Press Start 2P';
@@ -113,16 +115,15 @@ Phaser.Plugin.WaitingForPlayers.prototype.init = function(options) {
         noise.animations.play('noiseloop');
     }
 
-    game.count = 5;
-    text = game.add.text(game.world.centerX, game.world.centerY, game.count, { font: "192px monospace", fill: "#ddd", align: "center" });
-    text.setShadow(1, 5, 'rgba(0,255,0,0.5)', 5);
-    text.anchor.setTo(0.5, 0.5);
+    options.socket.on('game-start', function(){
+        game.count = 5;
+        text = game.add.text(game.world.centerX, game.world.centerY, game.count, { font: "192px monospace", fill: "#ddd", align: "center" });
+        text.setShadow(1, 5, 'rgba(0,255,0,0.5)', 5);
+        text.anchor.setTo(0.5, 0.5);
 
-    game.time.events.repeat(Phaser.Timer.SECOND * 1, 1, this.startCountdown, this);
-};
+        game.time.events.repeat(Phaser.Timer.SECOND * 1, 1, this.startCountdown, this);
+    }.bind(this));
 
-Phaser.Plugin.WaitingForPlayers.prototype.setSocket = function (socket) {
-    this._socket = socket;
 };
 
 Phaser.Plugin.WaitingForPlayers.prototype.update = function () {};
@@ -133,7 +134,7 @@ Phaser.Plugin.WaitingForPlayers.prototype.startCountdown = function () {
     text.setText(game.count);
 
     if (game.count === 0) {
-        //game.state.start('Play');
+        game.state.start('Play');
     } else {
         game.time.events.repeat(Phaser.Timer.SECOND * 1, 1, this.startCountdown, this);
     }
