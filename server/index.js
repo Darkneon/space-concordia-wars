@@ -6,6 +6,7 @@ var PORT = 3000;
 /*Models and Services*/
 var Room = require('./models/Room.js');
 var PreGameServices = require('./services/pregame-services.js');
+var GameServices = require('./services/game-services.js')
 
 /*Modules*/
 var express  = require('express');
@@ -16,7 +17,7 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var assert = require('assert');
 
-app.use(express.static(path.join(__dirname, '../client')));
+app.use(express.static(path.join(dirname, '../client')));
 app.use(bodyParser.urlencoded());
 
 var preGameServices = new PreGameServices({
@@ -29,7 +30,11 @@ var preGameServices = new PreGameServices({
                         io.to(room.id).emit('game-start');
                     }
                 },
-                io: io,
+                io: io
+});
+
+var gameServices = new GameServices({
+                io: io
 });
 
 server.listen(PORT, function () {
@@ -263,7 +268,11 @@ io.sockets.on('connection', function (socket) {
 
         }
     });
-    
+
+    socket.on('get-iri-level', function(data) {
+       gameServices.generateLevels();
+    });
+
     socket.on('game-player-ready', function(data) {
         if(playerList[socket.id] != null){
             var playerID = playerList[socket.id].nickname;

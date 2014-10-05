@@ -11,6 +11,7 @@ var Room = function (id) {
     this.numOfJoinedPlayers = 0;
     this.currentGameIndex = NOT_IN_GAME;
     this.games = ['iridescence', 'mehdisez', 'invaders', 'snake', 'tanks', 'podium'];
+    this.iridescenceLevel = [];
 
     //maybe add a gamestatus enum
 }
