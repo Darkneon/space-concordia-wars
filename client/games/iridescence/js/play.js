@@ -121,6 +121,11 @@ Game.Play.prototype = {
                 jumpCount += 1;
             }
         }, this);
+
+        this.socket = game.options.socket;
+        this.playerUpdateEvent = game.time.events.loop(Phaser.Timer.SECOND, function () {
+            this.socket.emit('player-update', {});
+        }, this);
     },
 	
 	update: function(){
@@ -325,7 +330,8 @@ Game.Play.prototype = {
 		this.createPlatform(w, posY, color);
 	},
 	
-	restartGame: function() {  
+	restartGame: function() {
+        game.time.events.remove(this.playerUpdateEvent);
 		explode.play('', 0, 0.3*muteValue,false);
 		game.state.start('Over', true, false, scoreV);
 		

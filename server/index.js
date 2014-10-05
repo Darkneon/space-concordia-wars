@@ -17,7 +17,7 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var assert = require('assert');
 
-app.use(express.static(path.join(dirname, '../client')));
+app.use(express.static(path.join(__dirname, '../client')));
 app.use(bodyParser.urlencoded());
 
 var preGameServices = new PreGameServices({
@@ -228,6 +228,7 @@ io.sockets.on('connection', function (socket) {
     });
 
     socket.on('player-update', function (data) {
+        console.log(new Date().getTime(), 'player-update', data);
         if(typeof playerList[socket.id] !== 'undefined') {
             playerList[socket.id].data = playerList[socket.id].data || {};
             playerList[socket.id].data.score = data.score;

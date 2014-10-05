@@ -2,7 +2,7 @@ var GameServices = function(options) {
     var NOOP = function() {};
     options = options || {};
     options.events = options.events || {};
-    this.iridescenceManager = require('/services/iridescence-services.js')
+    this.iridescenceManager = require('./games/iridescence-services.js')
 
 
 
@@ -16,7 +16,7 @@ var GameServices = function(options) {
   //  };
 };
 
-GameService.prototype.setIridescenceLevel = function(room) {
+GameServices.prototype.setIridescenceLevel = function(room) {
     if(!room.iridescenceLevel) {
         room.iridescenceLevel = this.iridescenceManager.generateLevels();
     }
