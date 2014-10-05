@@ -14,12 +14,14 @@ Game.Play.prototype = {
 		greenKey = game.input.keyboard.addKey(Phaser.Keyboard.S);
 		blueKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
 		
-		currColor = 0
-		hitt = 0
+		currColor = 0;
+		hitt = 0;
 		jumptimer = 0;
-		
+
+        this.COLORS = ['red', 'green', 'blue'];
+
 //		Stars
-		var emitterA = game.add.emitter(game.world.centerX, game.world.centerY, 100);
+		var emitterA = game.add.emitter(game.world.centerX, game.world.centerY, 50);
 		emitterA.makeParticles('stars');
 		emitterA.setSize(900,600);
 		emitterA.gravity = 0;
@@ -46,8 +48,8 @@ Game.Play.prototype = {
 		hit = game.add.audio('hit');
 		explode = game.add.audio('explode');
 		
-		ost = game.add.audio('ost');
-		ost.play('', 0, 0.3 * muteValue,true);
+		//ost = game.add.audio('ost');
+		//ost.play('', 0, 0.3 * muteValue,true);
 		
 		//Mute
 		mute = game.add.sprite(870, 8, "mute");
@@ -78,7 +80,7 @@ Game.Play.prototype = {
 		firstPlatform.body.checkCollision.down = false;
 		firstPlatform.body.checkCollision.left = false;
 		firstPlatform.body.checkCollision.right = false;
-		firstPlatform.scale.x = 2
+		firstPlatform.scale.x = 2;
 		
 		platformsA = game.add.group();
 		platformsA.enableBody = true;
@@ -107,13 +109,22 @@ Game.Play.prototype = {
 		fps.font = 'Press Start 2P';
 		fps.fontSize = '20px';
 
-        this.touchControl = this.game.plugins.add(Phaser.Plugin.TouchControl);
-        this.touchControl.inputEnable();
-        this.touchControl.settings.singleDirection = true;
+        this.game.input.onDown.add(function () {
+            if (this.game.input.activePointer.position.x < game.world.centerX) {
+                currColor = (currColor + 1) % 3;
+            }
+        }, this);
+
+        this.game.input.onUp.add(function () {
+            if (this.game.input.activePointer.position.x >= game.world.centerX) {
+                jumptimer = 0;
+                jumpCount += 1;
+            }
+        }, this);
     },
 	
 	update: function(){
-		scoreV+=10
+		scoreV+=10;
 
 		game.physics.arcade.collide(player, firstPlatform, overlapHandler, null, this);
 		game.physics.arcade.collide(player, whites, overlapHandler, null, this);
@@ -155,19 +166,14 @@ Game.Play.prototype = {
 			score.setText('SCORE: ' + scoreV)
 
         if (game.input.activePointer.isDown) {
-            if (this.touchControl.cursors.left) {
-                currColor = 0
-                player.animations.play('red');
+            var up = false;
+            if (game.input.activePointer.position.x > 300) {
+                up = true;
             }
-            if (this.touchControl.cursors.down) {
-                currColor = 1
-                player.animations.play('green');
-            }
-            if (this.touchControl.cursors.right) {
-                currColor = 2
-                player.animations.play('blue');
-            }
-            if (this.touchControl.cursors.up && player.body.touching.down) {
+
+            player.animations.play(this.COLORS[currColor]);
+
+            if (up && player.body.touching.down) {
                 jumptimer = 1;
                 player.body.velocity.y = -800;
                 jumpCount = 1;
@@ -177,15 +183,15 @@ Game.Play.prototype = {
                 player.scale.y = 1.1
 
             }
-            else if (this.touchControl.cursors.up && (jumptimer == 0) && jumpCount == 0) {
+            else if (up && (jumptimer == 0) && jumpCount == 0) {
                 player.body.velocity.y = -800;
                 jump.play('', 0, 0.3 * muteValue, false);
-                jumpCount = 1
+                jumpCount = 1;
                 jumptimer = 1;
                 player.scale.x = 0.9
                 player.scale.y = 1.1
             }
-            else if (this.touchControl.cursors.up && (jumptimer != 0)) {
+            else if (up && (jumptimer != 0)) {
                 if (jumptimer > 30) {
                     jumptimer = 0;
                     jumpCount = 1
@@ -197,7 +203,7 @@ Game.Play.prototype = {
                     player.body.velocity.y = -500;
                 }
             }
-            else if (!this.touchControl.cursors.up && (jumptimer == 0) && jumpCount == 1) {
+            else if (!up && (jumptimer == 0) && jumpCount == 1) {
                 jumpCount = 2
                 player.scale.x = 1.0
                 player.scale.y = 1.0
@@ -208,14 +214,14 @@ Game.Play.prototype = {
                 player.scale.x = 1.0
                 player.scale.y = 1.0
             }
-            else if (this.touchControl.cursors.up && (jumptimer == 0) && jumpCount == 2) {
+            else if (up && (jumptimer == 0) && jumpCount == 2) {
                 player.body.velocity.y = -800;
                 jump.play('', 0, 0.3 * muteValue, false);
                 jumpCount = 3
                 player.scale.x = 0.9
                 player.scale.y = 1.1
             }
-            else if (!this.touchControl.cursors.up && jumpCount == 3) {
+            else if (!up && jumpCount == 3) {
                 player.scale.x = 1.0
                 player.scale.y = 1.0
             }
@@ -226,7 +232,12 @@ Game.Play.prototype = {
 			this.restartGame();
 
 	},
-	
+
+    render: function () {
+        game.debug.text(jumptimer, 50, 14, "#00ff00", '24px Courier');
+        game.debug.text(jumpCount, 80, 14, "#00ff00", '24px Courier');
+        game.debug.text(game.world.centerX, 130, 14, "#00ff00", '24px Courier');
+    },
 	createPlatform: function(x, y, color) {
 		
 		// Get the first dead pipe of our group
