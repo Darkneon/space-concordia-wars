@@ -105,13 +105,13 @@ Game.Play.prototype = {
 		score.fontSize = '20px';
 		scoreV = 0;
 
-        this.redScore = game.add.text(10, 30, 'RED SCORE: 0', {fill: '#FDFFC4'});
-        this.redScore.font = 'Press Start 2P';
-        this.redScore.fontSize = '20px';
+        this.redScoreText = game.add.text(10, 30, 'RED SCORE: 0', {fill: '#FDFFC4'});
+        this.redScoreText.font = 'Press Start 2P';
+        this.redScoreText.fontSize = '20px';
 
-        this.blueScore = game.add.text(10, 50, 'BLUE SCORE: 0', {fill: '#FDFFC4'});
-        this.blueScore.font = 'Press Start 2P';
-        this.blueScore.fontSize = '20px';
+        this.blueScoreText = game.add.text(10, 50, 'BLUE SCORE: 0', {fill: '#FDFFC4'});
+        this.blueScoreText.font = 'Press Start 2P';
+        this.blueScoreText.fontSize = '20px';
 
 		
 		fps = game.add.text(10, 80, 'FPS: 0', {fill: '#FDFFC4' });
@@ -142,8 +142,8 @@ Game.Play.prototype = {
 
         this.socket.on('game-progress-update', function (data) {
             console.log(data, this);
-            this.redScore.setText('RED SCORE: ' + data.redScore);
-            this.blueScore.setText('BLUE SCORE: ' + data.blueScore);
+            this.redScoreText.setText('RED SCORE: ' + data.redScore);
+            this.blueScoreText.setText('BLUE SCORE: ' + data.blueScore);
         }.bind(this));
 
         this.maxJump = 0;
