@@ -10,10 +10,14 @@ Phaser.Plugin.GameOver.prototype.init = function(options) {
 
     spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.W);
 
+    this.socket = options.socket;
+
     options = {
         redScore: 2,
         blueScore: 1
     };
+
+
 
     if (options.stars) {
         //Stars
@@ -91,10 +95,10 @@ Phaser.Plugin.GameOver.prototype.init = function(options) {
         noise.animations.add('noiseloop', [0, 1, 2], 15, true);
         noise.animations.play('noiseloop');
     }
-};
 
-Phaser.Plugin.GameOver.prototype.setSocket = function (socket) {
-    this._socket = socket;
+    this.socket.on('game-over-update', function (data) {
+        label2.setText('');
+    });
 };
 
 Phaser.Plugin.GameOver.prototype.update = function () {};

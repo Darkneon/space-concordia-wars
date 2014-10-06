@@ -100,12 +100,21 @@ Game.Play.prototype = {
 		whites.enableBody = true;
 	
 		//Txt
-		score = game.add.text(10, 10, 'SCORE: 0', {fill: '#FDFFC4'});
+		score = game.add.text(10, 10, 'YOUR SCORE: 0', {fill: '#FDFFC4'});
 		score.font = 'Press Start 2P';
 		score.fontSize = '20px';
-		scoreV = 0
+		scoreV = 0;
+
+        this.redScore = game.add.text(10, 30, 'RED SCORE: 0', {fill: '#FDFFC4'});
+        this.redScore.font = 'Press Start 2P';
+        this.redScore.fontSize = '20px';
+
+        this.blueScore = game.add.text(10, 50, 'BLUE SCORE: 0', {fill: '#FDFFC4'});
+        this.blueScore.font = 'Press Start 2P';
+        this.blueScore.fontSize = '20px';
+
 		
-		fps = game.add.text(10, 40, 'FPS: 0', {fill: '#FDFFC4' });
+		fps = game.add.text(10, 80, 'FPS: 0', {fill: '#FDFFC4' });
 		fps.font = 'Press Start 2P';
 		fps.fontSize = '20px';
 
@@ -124,8 +133,20 @@ Game.Play.prototype = {
 
         this.socket = game.options.socket;
         this.playerUpdateEvent = game.time.events.loop(Phaser.Timer.SECOND, function () {
-            this.socket.emit('player-update', {});
+            this.socket.emit('player-update', {
+                score: scoreV,
+                highestJump: this.maxJump,
+                status: 'alive'
+            });
         }, this);
+
+        this.socket.on('game-progress-update', function (data) {
+            console.log(data, this);
+            this.redScore.setText('RED SCORE: ' + data.redScore);
+            this.blueScore.setText('BLUE SCORE: ' + data.blueScore);
+        }.bind(this));
+
+        this.maxJump = 0;
     },
 	
 	update: function(){
@@ -142,17 +163,17 @@ Game.Play.prototype = {
 			game.physics.arcade.collide(player, blues, overlapHandler, null, this);
 		
 		function overlapHandler (obj1, obj2) {
-			player.x = 100
+			player.x = 100;
 			if(hitt == 0) {
 				hit.play('', 0, 0.3*muteValue,false);
-				hitt = 1
+				hitt = 1;
 			}
 		}
 		
 
 		if (player.body.touching.down) {
-			player.scale.x = 1.0
-			player.scale.y = 1.0
+			player.scale.x = 1.0;
+			player.scale.y = 1.0;
 			jumpCount = 0
 		}
 
@@ -231,7 +252,9 @@ Game.Play.prototype = {
                 player.scale.y = 1.0
             }
         }
-		
+
+        this.maxJump = Math.max(this.maxJump, player.position.y);
+
 		//restart
 		if (player.position.y > h)
 			this.restartGame();
@@ -247,9 +270,9 @@ Game.Play.prototype = {
 		
 		// Get the first dead pipe of our group
 		
-		var platformA
-		var platformB
-		var platform
+		var platformA;
+		var platformB;
+		var platform;
 		
 		if(color == 1) {
 			
@@ -332,8 +355,13 @@ Game.Play.prototype = {
 	
 	restartGame: function() {
         game.time.events.remove(this.playerUpdateEvent);
-		explode.play('', 0, 0.3*muteValue,false);
-		game.state.start('Over', true, false, scoreV);
+		explode.play('', 0, 0.3 * muteValue, false);
+
+		game.state.start('Over', true, false, {
+            score: scoreV,
+            highestJump: this.maxJump,
+            status: 'dead'
+        });
 		
 	},
 	
