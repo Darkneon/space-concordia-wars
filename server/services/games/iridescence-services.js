@@ -33,3 +33,32 @@ IridescenceServices.prototype.generateLevels = function() {
 
     return this.level;
 };
+
+IridescenceServices.prototype.calculateFinalScore = function(room) {
+    var score = { red: 0, blue: 0};
+    var highestJump = {height: 0, team: ''};
+
+    Object.keys(room.players).forEach(function(key) {
+        var player = room.players[key];
+        score[player.team] += player.score;
+
+        if (player.highestJump > highestJump.height) {
+            highestJump.height = player.highestJump;
+            highestJump.team = player.team;
+        }
+    });
+
+    var points = { red: 0, blue: 0};
+    points[highestJump.team] += 1;
+
+    if (score.red > score.blue) { points['red'] += 1; }
+    else if (score.red < score.blue) { points['blue'] += 1; }
+
+    return {
+        score: score,
+        points: points,
+        highestJump: highestJump
+    };
+};
+
+module.exports = IridescenceServices;
