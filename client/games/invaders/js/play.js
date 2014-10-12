@@ -4,6 +4,7 @@ Game.Play = function (game){};
 var player;
 var aliens;
 var bullets;
+var ghostBullets;
 var bulletTime = 0;
 var cursors;
 var fireButton;
@@ -18,6 +19,8 @@ var firingTimer = 0;
 var stateText;
 var livingEnemies = [];
 
+var NUMBER_OF_BULLETS = 10;
+
 Game.Play.prototype = {
     create: function() {
         game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -25,13 +28,11 @@ Game.Play.prototype = {
         //  The scrolling starfield background
         starfield = game.add.tileSprite(0, 0, 800, 600, 'starfield');
 
-
-
         //  Our bullet group
         bullets = game.add.group();
         bullets.enableBody = true;
         bullets.physicsBodyType = Phaser.Physics.ARCADE;
-        bullets.createMultiple(30, 'bullet');
+        bullets.createMultiple(NUMBER_OF_BULLETS, 'bullet');
         bullets.setAll('anchor.x', 0.5);
         bullets.setAll('anchor.y', 1);
         bullets.setAll('outOfBoundsKill', true);
@@ -51,6 +52,29 @@ Game.Play.prototype = {
         player = game.add.sprite(400, 500, 'ship');
         player.anchor.setTo(0.5, 0.5);
         game.physics.enable(player, Phaser.Physics.ARCADE);
+
+        ghostPlayers = [];
+        for (var i = 0; i < 3; i++) {
+            var randomX = Math.round(Math.random() * (400 - 40)) + 40;
+            var ghostPlayer = game.add.sprite(randomX, 500, 'ship');
+            ghostPlayer.anchor.setTo(0.5, 0.5);
+
+            game.physics.arcade.enable(ghostPlayer);
+            ghostPlayer.enableBody = true;
+            ghostPlayer.physicsBodyType = Phaser.Physics.ARCADE;
+            ghostPlayer.body.velocity.x = 20;
+            ghostPlayer.alpha = 0.3;
+            ghostPlayers.push(ghostPlayer);
+        }
+
+       ghostBullets = game.add.group();
+       ghostBullets.enableBody = true;
+       ghostBullets.physicsBodyType = Phaser.Physics.ARCADE;
+       ghostBullets.createMultiple(NUMBER_OF_BULLETS * ghostPlayers.length, 'bullet');
+       ghostBullets.setAll('anchor.x', 0.5);
+       ghostBullets.setAll('anchor.y', 1);
+       ghostBullets.setAll('outOfBoundsKill', true);
+       ghostBullets.setAll('checkWorldBounds', true);
 
         //  The baddies!
         aliens = game.add.group();
@@ -128,7 +152,6 @@ Game.Play.prototype = {
         aliens.y += 10;
     },
     update: function() {
-
         //  Scroll the background
         starfield.tilePosition.y += 2;
 
@@ -262,9 +285,17 @@ Game.Play.prototype = {
                 bullet.reset(player.x, player.y + 8);
                 bullet.body.velocity.y = -400;
                 bulletTime = game.time.now + 200;
+                this.fireGhostBullet(ghostPlayers[0]);
             }
         }
 
+    },
+    fireGhostBullet: function (ghost) {
+        var bullet = ghostBullets.getFirstExists(false);
+        if (bullet) {
+            bullet.reset(ghost.x, ghost.y);
+            bullet.body.velocity.y = -400;
+        }
     },
     resetBullet: function(bullet) {
 
@@ -289,3 +320,4 @@ Game.Play.prototype = {
 
     }
 };
+//@ sourceURL=play.js

@@ -228,45 +228,8 @@ io.sockets.on('connection', function (socket) {
     });
 
     socket.on('player-update', function (data) {
-        console.log(new Date().getTime(), 'player-update', data);
         if(typeof playerList[socket.id] !== 'undefined') {
-            playerList[socket.id].data = playerList[socket.id].data || {};
-            playerList[socket.id].data.score = data.score;
-            playerList[socket.id].data.highestJump = data.highestJump;
-            playerList[socket.id].data.status = data.status;
-
-            var allDead = 0;
-
-            var redScore = 0;
-            var blueScore = 0;
-
-            for (var key in playerList) {
-                var player = playerList[key];
-                if (player.data && player.data.status === 'dead') {
-                    allDead += 1;
-                }
-
-                assert(player.team === 'red' || player.team === 'blue');
-                if (player.data) {
-                    if (player.team === 'red') { redScore += player.data.score; }
-                    if (player.team === 'blue') { blueScore += player.data.score; }
-                }
-            }
-
-            if (allDead === Object.keys(playerList).length) {
-                console.log('player list = ', playerList);
-                io.emit('game-over-update', {
-                    highestJump: 'player1',
-                    redScore: redScore,
-                    blueScore: blueScore
-                });
-            } else {
-                io.emit('game-progress-update', {
-                    redScore: redScore,
-                    blueScore: blueScore
-                });
-            }
-
+            gameServices.processPlayerUpdate(data, socket.id, playerList);
         }
     });
 

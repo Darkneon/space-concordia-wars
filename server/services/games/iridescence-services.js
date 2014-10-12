@@ -1,3 +1,5 @@
+var assert = require('assert');
+
 var Platform = function(color, width, height, containsCoin, coinLocation){
     this.color = color;
     this.width = width;
@@ -61,4 +63,34 @@ IridescenceServices.prototype.calculateFinalScore = function(room) {
     };
 };
 
-module.exports = IridescenceServices;
+IridescenceServices.prototype.processPlayerUpdate = function(data, playerId, playerList) {
+    if (playerList[playerId]) {
+        var playerData = playerList[playerId].data || {};
+        playerData.score = data.score;
+        playerData.highestJump = data.highestJump;
+        playerData.status = data.status;
+
+        playerList[playerId].data = playerData;
+
+        var redScore = 0;
+        var blueScore = 0;
+
+        for (var key in playerList) {
+            var player = playerList[key];
+
+            assert(player.team === 'red' || player.team === 'blue');
+            if (player.data) {
+                if (player.team === 'red') { redScore += player.data.score; }
+                if (player.team === 'blue') { blueScore += player.data.score; }
+            }
+        }
+
+        return {
+            redScore: redScore,
+            blueScore: blueScore
+        };
+    }
+
+    return null;
+};
+module.exports = new IridescenceServices();
