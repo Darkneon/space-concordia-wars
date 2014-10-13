@@ -2,7 +2,10 @@ var GameServices = function(options) {
     var NOOP = function() {};
     options = options || {};
     options.events = options.events || {};
-    this.iridescenceManager = require('./games/iridescence-services.js');
+    this.managers = {};
+
+    this.managers.iridescence = require('./games/iridescence-services.js');
+    this.managers.invaders = require('./games/invaders-services.js');
 
 
 
@@ -18,13 +21,15 @@ var GameServices = function(options) {
 
 GameServices.prototype.setIridescenceLevel = function(room) {
     if(!room.iridescenceLevel) {
-        room.iridescenceLevel = this.iridescenceManager.generateLevels();
+        room.iridescenceLevel = this.managers.iridescence.generateLevels();
     }
     this.io.to(room.id).emit({levels: room});
 };
 
 GameServices.prototype.processPlayerUpdate = function(data, playerId, playerList) {
-    var data = this.iridescenceManager.processPlayerUpdate(data, playerId, playerList);
+    var manager = this.managers[data.game] || this.managers.iridescence;
+
+    var data = manager.processPlayerUpdate(data, playerId, playerList);
 
     var allDead = 0;
 

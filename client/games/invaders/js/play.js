@@ -54,7 +54,7 @@ Game.Play.prototype = {
         game.physics.enable(player, Phaser.Physics.ARCADE);
 
         ghostPlayers = [];
-        for (var i = 0; i < 3; i++) {
+        for (var i = 0; i < 1; i++) {
             var randomX = Math.round(Math.random() * (400 - 40)) + 40;
             var ghostPlayer = game.add.sprite(randomX, 500, 'ship');
             ghostPlayer.anchor.setTo(0.5, 0.5);
@@ -62,7 +62,6 @@ Game.Play.prototype = {
             game.physics.arcade.enable(ghostPlayer);
             ghostPlayer.enableBody = true;
             ghostPlayer.physicsBodyType = Phaser.Physics.ARCADE;
-            ghostPlayer.body.velocity.x = 20;
             ghostPlayer.alpha = 0.3;
             ghostPlayers.push(ghostPlayer);
         }
@@ -70,7 +69,7 @@ Game.Play.prototype = {
        ghostBullets = game.add.group();
        ghostBullets.enableBody = true;
        ghostBullets.physicsBodyType = Phaser.Physics.ARCADE;
-       ghostBullets.createMultiple(NUMBER_OF_BULLETS * ghostPlayers.length, 'bullet');
+       ghostBullets.createMultiple(NUMBER_OF_BULLETS * 2 *  ghostPlayers.length, 'bullet');
        ghostBullets.setAll('anchor.x', 0.5);
        ghostBullets.setAll('anchor.y', 1);
        ghostBullets.setAll('outOfBoundsKill', true);
@@ -117,6 +116,21 @@ Game.Play.prototype = {
         this.touchControl.inputEnable();
         this.touchControl.settings.singleDirection = true;
 
+        this.socket = game.options.socket;
+        var that = this;
+        this.socket.on('game-progress-update', function (data) {
+
+            data.players.forEach(function(dataPlayer) {
+                if (dataPlayer.id !== this.io.engine.id) {
+                    console.log('invaders game-progress-update', JSON.stringify(data.players, undefined, 2), this.io.engine.id);
+                    ghostPlayers[0].x = dataPlayer.positionX;
+                    ghostPlayers[0].y = dataPlayer.positionY;
+                    if (dataPlayer.fired) {
+                        that.fireGhostBullet(ghostPlayers[0]);
+                    }
+                }
+            }, this);
+        }, this);
     },
     createAliens: function() {
 
@@ -141,6 +155,9 @@ Game.Play.prototype = {
         //  When the tween loops it calls descend
         tween.onLoop.add(this.descend, this);
     },
+    render: function () {
+        game.debug.spriteInfo(ghostPlayers[0], 32, 32);
+    },
     setupInvader: function(invader) {
 
         invader.anchor.x = 0.5;
@@ -149,7 +166,7 @@ Game.Play.prototype = {
 
     },
     descend: function() {
-        aliens.y += 10;
+        aliens.y += 0;
     },
     update: function() {
         //  Scroll the background
@@ -161,10 +178,27 @@ Game.Play.prototype = {
         if (this.touchControl.cursors.left)
         {
             player.body.velocity.x = -200;
+            this.socket.emit('player-update', {
+                score: score,
+                status: 'alive',
+                fired: false,
+                game: 'invaders',
+                positionX: player.x,
+                positionY: player.y
+            });
+
         }
         else if ( this.touchControl.cursors.right)
         {
             player.body.velocity.x = 200;
+            this.socket.emit('player-update', {
+                score: score,
+                status: 'alive',
+                fired: false,
+                game: 'invaders',
+                positionX: player.x,
+                positionY: player.y
+            });
         }
 
         //  Firing?
@@ -243,7 +277,7 @@ Game.Play.prototype = {
 
     },
     enemyFires: function() {
-
+        return;
         //  Grab the first bullet we can from the pool
         enemyBullet = enemyBullets.getFirstExists(false);
 
@@ -285,7 +319,15 @@ Game.Play.prototype = {
                 bullet.reset(player.x, player.y + 8);
                 bullet.body.velocity.y = -400;
                 bulletTime = game.time.now + 200;
-                this.fireGhostBullet(ghostPlayers[0]);
+                this.socket.emit('player-update', {
+                    score: score,
+                    status: 'alive',
+                    fired: true,
+                    game: 'invaders',
+                    positionX: player.x,
+                    positionY: player.y
+                });
+
             }
         }
 
