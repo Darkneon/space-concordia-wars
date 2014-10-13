@@ -6,6 +6,7 @@ var GameServices = function(options) {
 
     this.managers.iridescence = require('./games/iridescence-services.js');
     this.managers.invaders = require('./games/invaders-services.js');
+    this.managers.tanks = require('./games/tanks-services.js');
 
 
 

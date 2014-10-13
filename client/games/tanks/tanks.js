@@ -18,7 +18,7 @@
         load(params.path + '/js/load.js');
         load(params.path + '/js/wait.js');
         load(params.path + '/js/game.js');
-        load(params.path + '/js/index.js');
+        load(params.path + '/js/play.js');
         var t = new T(params);
     };
 
