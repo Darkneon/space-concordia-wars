@@ -181,11 +181,11 @@ Game.Play.prototype = {
         this.leftButton.inputEnabled = true;
         this.leftButton.alpha = 0.5;
 
-        this.rightButton = game.add.sprite(175, game.world.height - 64, 'right');
+        this.rightButton = game.add.sprite(100, game.world.height - 64, 'right');
         this.rightButton.inputEnabled = true;
         this.rightButton.alpha = 0.5;
 
-        this.upButton = game.add.sprite(100, game.world.height - 64, 'up');
+        this.upButton = game.add.sprite(62.5, game.world.height - 128, 'up');
         this.upButton.inputEnabled = true;
         this.upButton.alpha = 0.5;
 
@@ -250,6 +250,9 @@ Game.Play.prototype = {
 
         this.health = 3;
 
+        this.respawningText = game.add.text(game.world.centerX, game.world.centerY, '', { font: "20px monospace", fill: "#0f0", align: "center" });
+        this.respawningText.anchor.setTo(0.5, 0.5);
+        this.respawningTime = 0;
         this.socket = game.options.socket;
         var that = this;
         this.socket.on('game-progress-update', function (data) {
@@ -266,11 +269,19 @@ Game.Play.prototype = {
                     if (dataPlayer.fired) {
                         that.fireEnemy(enemies[0], dataPlayer.bulletSpeedX, dataPlayer.bulletSpeedY);
                     }
-                } else {
+
                     if (dataPlayer.status === 'respawning') {
-                        tank.x = r(0, 500);
-                        tank.y = r(0, 500);
-                        that.health = 3;
+                        enemies[0].alive = false;
+                    } else if (!enemies[0].alive){
+                        enemies[0].alive = true;
+                        enemies[0].tank.reset(0, 0);
+                        enemies[0].shadow.reset();
+                        enemies[0].turret.reset();
+                    }
+                } else {
+                    if (dataPlayer.status === 'respawning' && that.respawningTime === 0) {
+                        that.respawningTime = 9;
+                        that.respawning();
                     }
                 }
             }, this);
@@ -386,6 +397,11 @@ Game.Play.prototype = {
     bulletHitPlayer: function(tank, bullet) {
         this.health -= 1;
         bullet.kill();
+        if (this.health <= 0) {
+            tank.kill();
+            shadow.kill();
+            turret.kill();
+        }
 
     },
 
@@ -412,7 +428,7 @@ Game.Play.prototype = {
     },
     fire: function(bulletRotation, x, y) {
 
-        if (game.time.now > nextFire && bullets.countDead() > 0)
+        if (game.time.now > nextFire && bullets.countDead() > 0 && this.respawningTime === 0)
         {
             nextFire = game.time.now + fireRate;
 
@@ -440,6 +456,36 @@ Game.Play.prototype = {
 
         if (this.time > 0) {
             game.time.events.repeat(Phaser.Timer.SECOND * 1, 1, this.timer, this);
+        }
+    },
+    respawning: function () {
+        this.respawningTime -= 1;
+
+        this.respawningText.setText('Respawning in: '  + this.respawningTime);
+
+        if (this.respawningTime > 0) {
+            game.time.events.repeat(Phaser.Timer.SECOND * 1, 1, this.respawning, this);
+        } else {
+            this.health = 3;
+            var updateData = {
+                positionX: tank.x,
+                positionY: tank.y,
+                turretAngle: 0,
+                fired: false,
+                game: 'tanks',
+                velocity: tank.body.velocity,
+                rotation: tank.rotation,
+                health: this.health,
+                bulletSpeedX: 0,
+                bulletSpeedY: 0,
+                status: 'alive'
+            };
+
+            this.socket.emit('player-update', updateData);
+            tank.reset(0, 0);
+            shadow.reset();
+            turret.reset();
+            this.respawningText.setText('');
         }
     }
 };
