@@ -1,0 +1,30 @@
+.content {
+    background: url(/css/background.jpg) no-repeat;
+    background-size: 100% 100%;
+}
+
+#title {
+    text-align: center;
+    text-shadow: 0 0 12px #052879;
+    font-weight: bold;
+    font-family: fantasy;
+    letter-spacing: 5px;
+    color: aliceblue;
+    font-size: 29px;
+    width: 300px;
+    margin: auto auto 20px;
+}
+
+#nickname-screen {
+    position: absolute;
+    text-align: center;
+    top: 40%;
+    width: 80%;
+    margin: 0px 10%;
+}
+
+#nickname {
+    background-color: #4F5967;
+    color: aliceblue;
+    border: 1px solid #7C7C7C;
+}

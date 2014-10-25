@@ -10,3 +10,11 @@
     font-size: 12px;
     color: gray;
 }
+
+#nickname-screen {
+    display: block;
+}
+
+#room-screen {
+    display: none;
+}

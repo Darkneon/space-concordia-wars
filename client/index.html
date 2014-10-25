@@ -25,7 +25,11 @@
     <script src="lib/markup.min.js"></script>
       
     <link href="components/join-room/css/join-room.css" rel="stylesheet">  
-    <script src="components/join-room/join-room.js"></script>    
+    <script src="components/join-room/join-room.js"></script>
+
+    <link href="components/nickname-screen/css/nickname-screen.css" rel="stylesheet">
+    <script src="components/nickname-screen/nickname-screen.js"></script>
+
     <script src="components/new-room/new-room.js"></script>
     <script src="components/players-room/players-room.js"></script>
     <script src="games/iridescence/iridescence.js"></script>    
@@ -39,6 +43,16 @@
     <script>
         $(document).ready(function() {
             var socket = io.connect('/');
+
+            var newRoomComponent = new NicknameScreen({
+                debug: true,
+                path: '/components/nickname-screen',
+                elements: {
+                    content: '#nickname-screen',
+                    hiddenContent: '#room-screen',
+                    nickname: '#nickname'
+                }
+            });
 
             var newRoomComponent = new NewRoom({
                 socket: socket,
@@ -165,25 +179,20 @@
   <body>
 
     <!-- Make sure all your bars are the first things in your <body> -->
-    
-    <header class="bar bar-nav">
-      <h1 class="title">Space Concordia Wars</h1>
-    </header>
-    
     <div id="modal" class="modal"></div>      
       
-    <div class="content">            
-        <input id='nickname' type="text" placeholder="Nickname" />        
-        <div id='new-room'></div>         
-        <div id='join-room'></div>         
-        <a id='game1' class="btn btn-positive btn-block">Test Game #1</a>
-        <a id='game2' class="btn btn-positive btn-block">Test Game #2</a>
-        <a id='game3' class="btn btn-positive btn-block">Test Game #3</a>
-        <a id='game4' class="btn btn-positive btn-block">Test Game #4</a>
-        <a id='game5' class="btn btn-positive btn-block">Test Game #5</a>
-        <!--<a id='game4' class="btn btn-positive btn-block">Test Game #4</a>-->
+    <div class="content">
+        <div id="nickname-screen"></div>
+        <div id="room-screen">
+            <div id='new-room'></div>
+            <div id='join-room'></div>
+            <a id='game1' class="btn btn-positive btn-block">Test Game #1</a>
+            <a id='game3' class="btn btn-positive btn-block">Test Game #3</a>
+            <a id='game5' class="btn btn-positive btn-block">Test Game #5</a>
+            <!--<a id='game4' class="btn btn-positive btn-block">Test Game #4</a>-->
 
-        <div id='players-room' class="card"></div>            
+            <div id='players-room' class="card"></div>
+        </div>
     </div>
 
   </body>
