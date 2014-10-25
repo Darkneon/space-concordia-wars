@@ -19,6 +19,10 @@ Game.Load.prototype = {
         //load game sounds
         this.load.audio('eat',[game.options.path + '/assets/sounds/eat.mp3',game.options.path + '/assets/sounds/eat.ogg',game.options.path + '/assets/sounds/eat.wav',game.options.path + '/assets/sounds/eat.m4a']);
 
+        ['left', 'right', 'up', 'down'].forEach(function(direction){
+            this.load.image(direction, game.options.commonPath + '/assets/' + direction + '.png');
+        }, this);
+
     },
     create: function() {
         this.preloadBar.cropEnabled = false;
@@ -29,3 +33,4 @@ Game.Load.prototype = {
         }
     }
 };
+//@ sourceURL=load.js

@@ -42,7 +42,6 @@ Game.Play.prototype = {
 
         this.stateGroup.add(this.bckGraph);
         this.stateGroup.add(this.scoreText);
-        this.stateGroup.add(this.osc);
         this.stateGroup.add(this.soundButton);
         for(var i=0;i<this.snake.length;i++){
             this.stateGroup.add(this.snake[i]);
@@ -53,10 +52,54 @@ Game.Play.prototype = {
     },
 
     initOnScreenControls : function(){
-        this.osc = this.add.sprite(this.world.centerX-40,400,'spriteSet','osc');
-        this.osc.anchor.setTo(0.5,0);
-        this.osc.inputEnabled = true;
-        this.osc.events.onInputDown.add(this.oscChange,this);
+        var GRID_WIDTH = 302 + 50;
+
+        this.leftButton = game.add.sprite(GRID_WIDTH + 50, game.world.height / 2, 'left');
+        this.leftButton.inputEnabled = true;
+        this.leftButton.alpha = 0.5;
+
+        this.downButton = game.add.sprite(GRID_WIDTH + 100, game.world.height / 2, 'down');
+        this.downButton.inputEnabled = true;
+        this.downButton.alpha = 0.5;
+
+        this.rightButton = game.add.sprite(GRID_WIDTH + 150, game.world.height / 2, 'right');
+        this.rightButton.inputEnabled = true;
+        this.rightButton.alpha = 0.5;
+
+        this.upButton = game.add.sprite(GRID_WIDTH + 100, game.world.height / 2 - 50, 'up');
+        this.upButton.inputEnabled = true;
+        this.upButton.alpha = 0.5;
+
+        this.leftButton.events.onInputDown.add(function (e) {
+            if(this.snakeDirection != 'right' && this.snakeDirection != 'left') {
+                this.snakeDirection = 'left';
+                this.canMove = false;
+            }
+        }, this);
+
+        this.downButton.events.onInputDown.add(function (e) {
+            if(this.snakeDirection != 'up' && this.snakeDirection != 'down') {
+                this.snakeDirection = 'down';
+                this.canMove = false;
+            }
+        }, this);
+
+
+        this.rightButton.events.onInputDown.add(function (e) {
+            if(this.snakeDirection != 'left' && this.snakeDirection != 'right') {
+                this.snakeDirection = 'right';
+                this.canMove = false;
+            }
+        }, this);
+
+        this.upButton.events.onInputDown.add(function (e) {
+            if(this.snakeDirection != 'up' && this.snakeDirection != 'down') {
+                this.snakeDirection = 'up';
+                this.canMove = false;
+            }
+        }, this);
+
+
 
         this.soundButton = this.add.sprite(this.world.width-30,400,'spriteSet','so');
         this.soundButton.anchor.setTo(1,0);
@@ -243,76 +286,8 @@ Game.Play.prototype = {
     },
 
     update: function () {
-        //change snake direction 
-
-        if(this.canMove==true){
-
-            if (this.cursors.up.isDown)
-            {
-                if(this.snakeDirection!='down'&&this.snakeDirection!='up'){
-                    this.snakeDirection = 'up';
-                    this.canMove=false;
-                }
-            }
-            else if (this.cursors.down.isDown)
-            {
-                if(this.snakeDirection!='up'&&this.snakeDirection!='down'){
-                    this.snakeDirection = 'down';
-                    this.canMove=false;
-                }
-
-            }
-            if (this.cursors.left.isDown)
-            {
-                if(this.snakeDirection!='right'&&this.snakeDirection!='left'){
-                    this.snakeDirection = 'left';
-                    this.canMove=false;
-                }
-            }
-            else if (this.cursors.right.isDown)
-            {
-                if(this.snakeDirection!='left'&&this.snakeDirection!='right'){
-                    this.snakeDirection = 'right';
-                    this.canMove=false;
-                }
-            }
-        }
-    },
-
-    oscChange : function(controls,pointer){
         //change snake direction
-        var oscY = this.osc.y + this.osc.height*0.5;
-        var oscX = this.osc.x;
-        if(this.canMove){
-
-            if(pointer.x>oscX+20&&pointer.y<oscY+20&&pointer.y>oscY-20){
-
-                if(this.snakeDirection!='left'&&this.snakeDirection!='right'){
-                    this.snakeDirection = 'right';
-                    this.canMove=false;
-                }
-            }
-            else if(pointer.x<oscX-20&&pointer.y<oscY+20&&pointer.y>oscY-20){
-                if(this.snakeDirection!='right'&&this.snakeDirection!='left'){
-                    this.snakeDirection = 'left';
-                    this.canMove=false;
-                }
-            }
-            else if(pointer.y>oscY+20&&pointer.x>oscX-20&&pointer.x<oscX+20){
-                if(this.snakeDirection!='up'&&this.snakeDirection!='down'){
-                    this.snakeDirection = 'down';
-                    this.canMove=false;
-                }
-            }
-            else if(pointer.y<oscY-20&&pointer.x>oscX-20&&pointer.x<oscX+20){
-                if(this.snakeDirection!='down'&&this.snakeDirection!='up'){
-                    this.snakeDirection = 'up';
-                    this.canMove=false;
-                }
-            }
-        }
     },
-
     gameOver : function(){
         var tweenControl = this.add.tween(this.stateGroup).to({x:this.world.width+500},500,Phaser.Easing.Sinusoidal.InOut,true);
         tweenControl.onComplete.add(function(){
