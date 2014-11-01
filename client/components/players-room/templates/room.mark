@@ -3,6 +3,6 @@
         {{roomName}}
         <button id="start-game-btn" class="btn btn-positive">Start Game</button>
     </li>
-    <li id="red-team" class="table-view-cell table-view-divider">Red Team:</li>                    
-    <li id="blue-team" class="table-view-cell table-view-divider">Blue Team:</li>                
+    <li id="red-team" class="table-view-cell table-view-divider">&nbsp;</li>
+    <li id="blue-team" class="table-view-cell table-view-divider">&nbsp;</li>
 </ul>

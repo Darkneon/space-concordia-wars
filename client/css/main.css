@@ -1,15 +1,20 @@
 #red-team {
-    color: #f00
+    background-color: rgba(255, 0, 0, 0.7);
 }
 
 #blue-team {
-    color: #00f
+    background-color: rgba(0, 0, 255, 0.7);
 }
 
 .room-players {
     font-size: 12px;
     color: gray;
 }
+
+#players-room.card, #players-room .table-view {
+    background-color: transparent;
+}
+
 
 #nickname-screen {
     display: block;
