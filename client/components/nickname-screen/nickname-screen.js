@@ -4,6 +4,7 @@
         this._$contentElement = $(options.elements.content);
         this._$nickname = $(options.elements.nickname);
         this._$hiddenContentElement = $(options.elements.hiddenContent);
+        this._onNicknameCreated = options.onNicknameCreated;
 
         $.get(options.path + '/templates/nickname-screen.mark', function (template) {
             var data = {
@@ -18,6 +19,7 @@
             if (isNicknameValid(nickname)) {
                 this._$contentElement.hide();
                 this._$hiddenContentElement.show();
+                this._onNicknameCreated(nickname);
             }
         }.bind(this));
     };

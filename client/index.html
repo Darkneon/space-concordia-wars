@@ -44,81 +44,82 @@
         $(document).ready(function() {
             var socket = io.connect('/');
 
-            var newRoomComponent = new NicknameScreen({
+            var nicknameScreen = new NicknameScreen({
                 debug: true,
                 path: '/components/nickname-screen',
                 elements: {
                     content: '#nickname-screen',
                     hiddenContent: '#room-screen',
                     nickname: '#nickname'
-                }
-            });
-
-            var newRoomComponent = new NewRoom({
-                socket: socket,
-                path: '/components/new-room', 
-                elements: { 
-                    content: '#new-room', 
-                    nickname: '#nickname'
                 },
-                onNewRoomCreated: function(roomID, nickname) {
-                    $.get('/getRooms', {}, function(result){
-                        console.log(result);
-                        for(var i = 0; i < result.length; i++) {
-                            console.log(result[i]);
+                onNicknameCreated: function(nickname) {
+                    var newRoomComponent = new NewRoom({
+                        socket: socket,
+                        path: '/components/new-room',
+                        nickname: nickname,
+                        elements: {
+                            content: '#new-room'
+                        },
+                        onNewRoomCreated: function(roomID, nickname) {
+                            $.get('/getRooms', {}, function(result){
+                                console.log(result);
+                                for(var i = 0; i < result.length; i++) {
+                                    console.log(result[i]);
+                                }
+                            }, 'json');
+
+                            $.get('/getRoom/' + roomID, {}, function(result) {
+                                console.log(result);
+                                $('#join-room').hide();
+                                $('#new-room').hide();
+                                var playersRoomComponent = new PlayersRoom({
+                                    socket: socket,
+                                    path: '/components/players-room',
+                                    nickname: nickname,
+                                    roomID: roomID,
+                                    roomName: result.roomName,
+                                    players: result.players,
+                                    elements: {
+                                        content: '#players-room'
+                                    }
+                                });
+                            }, 'json');
                         }
-                    }, 'json');
-                    
-                    $.get('/getRoom/' + roomID, {}, function(result) {
-                        console.log(result);
-                        $('#join-room').hide();
-                        $('#new-room').hide();
-                        var playersRoomComponent = new PlayersRoom({
-                            socket: socket, 
-                            path: '/components/players-room',
-                            nickname: nickname,
-                            roomID: roomID,
-                            roomName: result.roomName,
-                            players: result.players,
-                            elements: {
-                                content: '#players-room'
-                            }
-                        });
-                    }, 'json');
-                }
-                
-            });
-            
-            var joinGameComponent = new JoinRoom({
-                socket: socket,
-                path: '/components/join-room', 
-                elements: {
-                    content: '#join-room',
-                    nickname: '#nickname',
-                    modal: '#modal'
-                },
-                onJoined: function(roomID, nickname) {
-                    $('#join-room').hide();
-                    $('#new-room').hide();
 
-                    $.get('/getRoom/' + roomID, {}, function(result) {
-                        $('#join-room').hide();
-                        $('#new-room').hide();
-                        var playersRoomComponent = new PlayersRoom({
-                            socket: socket,
-                            path: '/components/players-room',
-                            nickname: nickname,
-                            roomID: roomID,
-                            roomName: result.roomName,
-                            players: result.players,
-                            elements: {
-                                content: '#players-room'
-                            }
-                        });
-                    }, 'json');
+                    });
+
+                    var joinGameComponent = new JoinRoom({
+                        socket: socket,
+                        path: '/components/join-room',
+                        elements: {
+                            content: '#join-room',
+                            nickname: '#nickname',
+                            modal: '#modal'
+                        },
+                        onJoined: function(roomID, nickname) {
+                            $('#join-room').hide();
+                            $('#new-room').hide();
+
+                            $.get('/getRoom/' + roomID, {}, function(result) {
+                                $('#join-room').hide();
+                                $('#new-room').hide();
+                                var playersRoomComponent = new PlayersRoom({
+                                    socket: socket,
+                                    path: '/components/players-room',
+                                    nickname: nickname,
+                                    roomID: roomID,
+                                    roomName: result.roomName,
+                                    players: result.players,
+                                    elements: {
+                                        content: '#players-room'
+                                    }
+                                });
+                            }, 'json');
+                        }
+                    });
                 }
             });
-                        
+
             var COMMON_PATH = '/games/common';
 
             $('#game1').on('click', function() {
