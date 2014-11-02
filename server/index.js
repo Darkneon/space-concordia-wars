@@ -35,7 +35,6 @@ var preGameServices = new PreGameServices({
     io: io
 });
 
-
 server.listen(PORT, function () {
     console.log('And we are live on port %d', server.address().port);
 });
@@ -87,9 +86,11 @@ io.sockets.on('connection', function (socket) {
         }
     });
 
-    socket.on('get-iri-level', function(data) {
-       gameServices.generateLevels();
-    });
+   // socket.on('get-iri-level', function(data) {
+   //     var roomID = playerList[socket.id].joinedRoom;
+   //     rooms[roomID].iridescenceLevel = iridescenceServices.generatePlatforms();
+   //     io.to(roomID).emit('iri-level', rooms[roomID].iridescenceLevel);
+   // });
 
     socket.on('game-player-ready', function(data) {
         if(playerList[socket.id] != null){

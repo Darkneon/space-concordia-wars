@@ -19,6 +19,7 @@ Game.Play.prototype = {
 		jumptimer = 0;
 
         this.COLORS = ['red', 'green', 'blue'];
+        this.platformIter = new platformIterator(game.platforms);
 
 //		Stars
 		var emitterA = game.add.emitter(game.world.centerX, game.world.centerY, 50);
@@ -131,6 +132,8 @@ Game.Play.prototype = {
             }
         }, this);
 
+        this.levelPlatforms = game.options.extra;
+        this.platformIter = new platformIterator(this.levelPlatforms);
         this.socket = game.options.socket;
         this.playerUpdateEvent = game.time.events.loop(Phaser.Timer.SECOND, function () {
             this.socket.emit('player-update', {
@@ -145,6 +148,10 @@ Game.Play.prototype = {
             this.redScoreText.setText('RED SCORE: ' + data.redScore);
             this.blueScoreText.setText('BLUE SCORE: ' + data.blueScore);
         }.bind(this));
+
+       // this.socket.on('iri-level', function(data){
+        //    this.platformIter.platforms = data;
+        //})
 
         this.maxJump = 0;
     },
@@ -346,11 +353,20 @@ Game.Play.prototype = {
 		explode.volume = 0.3 * muteValue
 		mute.frame = 1 - muteValue
 	},
-	
+
+/*
+    Make changes here
+ */
 	addPlatform: function() {  
-		var posY = Math.floor(Math.random()*(h-300+1)+300)
-		var color = Math.floor(Math.random() * ((4-1)+1) + 1);
-		this.createPlatform(w, posY, color);
+		/*
+		var incrementIndex = 1;
+
+		 */
+		//var posY = Math.floor(Math.random()*(h-300+1)+300)
+		//var color = Math.floor(Math.random() * ((4-1)+1) + 1);
+        var platform = this.platformIter.next();
+        this.createPlatform(platform.width, platform.height, platform.color);
+		//this.createPlatform(w, posY, color);
 	},
 	
 	restartGame: function() {
@@ -363,8 +379,35 @@ Game.Play.prototype = {
             status: 'dead'
         });
 		
-	},
+	}
 	
 }
+
+var platformIterator = function(platforms){
+    this.platforms = platforms || null;
+    this.index = 0;
+    this.iterations = 1;
+};
+
+platformIterator.prototype.first = function() {
+    this.reset();
+    return this.next();
+};
+
+platformIterator.prototype.next = function() {
+//increment the index by 1
+    var platform = this.platforms[this.index];
+    this.index += this.iterations;
+    if(this.index < platforms.length - 1){
+        this.index = this.index % platforms.length;
+        this.iterations += 1;
+    }
+    return platform;
+};
+
+platformIterator.prototype.reset = function(){
+    this.index = 0;
+    this.iterations = 1;
+};
 
 //@ sourceURL=play.js
