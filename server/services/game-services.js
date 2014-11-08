@@ -20,12 +20,12 @@ var GameServices = function(options) {
   //  };
 };
 
-GameServices.prototype.setIridescenceLevel = function(room) {
-    if(!room.iridescenceLevel) {
-        room.iridescenceLevel = this.managers.iridescence.generateLevels();
-    }
-    this.io.to(room.id).emit({levels: room});
-};
+//GameServices.prototype.setIridescenceLevel = function(room) {
+//    if(!room.iridescenceLevel) {
+//        room.iridescenceLevel = this.managers.iridescence.generatePlatforms();
+//    }
+//    this.io.to(room.id).emit({levels: room});
+//};
 
 GameServices.prototype.processPlayerUpdate = function(data, playerId, playerList) {
     var manager = this.managers[data.game] || this.managers.iridescence;

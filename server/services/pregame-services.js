@@ -1,4 +1,6 @@
 //waiting for players to load
+var IridescenceServices = require('./games/iridescence-services.js');
+//var iridescenceServices = new IridescenceServices();
 
 var PreGameService = function(options) {
     var NOOP = function() {};
@@ -27,8 +29,16 @@ PreGameService.prototype.setPlayerReady = function(room, playerId) {
 PreGameService.prototype.startNextGame = function(room) {
     var game = room.getNextGame();
     if (game) {
+        var gamedata = {};
+        if(game == 'iridescence'){
+            gamedata.extra = IridescenceServices.generatePlatforms();
+        }
+        else {
+            gamedata.extra = null;
+        }
+        gamedata.currentGame = game;
         console.log('load-game');
-        this.io.to(room.id).emit('load-game', {currentGame: game});
+        this.io.to(room.id).emit('load-game', gamedata);
     }
     // else to some logging
 }
