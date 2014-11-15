@@ -38,33 +38,12 @@
    
     JoinRoom.prototype.onJoinRoomClick = function() {                
         this._socket.emit('getAllRooms');
-        /*
-        var that = this;
-        this._$modalElement.find('.content').html(this._templatesCache['rooms-list']);
-        $.get('/getRooms', function(result) {
-            result.forEach(function(room) {
-                if (!room) { return; } //TODO: getting nulls in result, understand why
-                
-                var template = that._templatesCache['room'];
-                var data = {
-                    id: room.id,
-                    players: room.players.length,
-                    capacity: room.roomCapacity
-                };
-                
-                $('#rooms-list').append($(Mark.up(template, data)));            
-            });                            
-        })
-        .fail(function() { 
-            console.error('list-games') 
-        });
-        */
     };
     
     //TODO: We get all the rooms before validating the nickname. Validation only happens on room joining. This (probably) shouldn't be the case.
     JoinRoom.prototype.onGetAllRooms = function(result) {
         var that = this;
-        this._$modalElement.find('.content').html(this._templatesCache['rooms-list']);
+        this._$modalElement.find('.modal-body').html(this._templatesCache['rooms-list']);
         result.forEach(function(room) {
             if (!room) { return; }
             //console.log(room);

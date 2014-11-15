@@ -12,14 +12,14 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     
     
-    <link href="lib/ratchet/css/ratchet.css" rel="stylesheet">
+    <link href="lib/bootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 
     <!-- Include the compiled Ratchet JS -->
-    <script src="lib/ratchet/js/ratchet.js"></script>      
+    <script src="lib/bootstrap/js/bootstrap.js"></script>
     <script src="lib/dom.js"></script>     
     <script src="lib/phaser.js"></script>
     <script src="lib/markup.min.js"></script>
@@ -173,9 +173,9 @@
   <body>
 
     <!-- Make sure all your bars are the first things in your <body> -->
-    <div id="modal" class="modal"></div>      
+    <div id="modal" class="modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
       
-    <div class="content">
+    <div class="content" role="main">
         <div id="nickname-screen"></div>
         <div id="room-screen">
             <div id='new-room'></div>
@@ -185,7 +185,7 @@
             <a id='game5' class="btn btn-positive btn-block">Test Game #5</a>
             <!--<a id='game4' class="btn btn-positive btn-block">Test Game #4</a>-->
 
-            <div id='players-room' class="card"></div>
+            <div id='players-room'></div>
         </div>
     </div>
 

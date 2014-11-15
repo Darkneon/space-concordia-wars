@@ -2,10 +2,11 @@
     Space Concordia Wars
 </div>
 
-<input id='nickname' type="text" placeholder="Nickname" value="{{nickname}}" />
-
-<a id="begin" class="btn btn-positive">
-    Begin
-</a>
+<div class="input-group">
+  <input type="text" id='nickname' class="form-control" value="{{nickname}}">
+  <span class="input-group-btn">
+    <button id="begin" class="btn btn-success" type="button">Begin!</button>
+  </span>
+</div>
 
 <div class="error">{{error-message}}</div>

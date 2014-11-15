@@ -1,1 +1,1 @@
-<li class="table-view-cell">{{nickname}}<button id="change-team-btn" class="btn">Change Team</button></li>
+<li class="list-group-item">{{nickname}}<button id="change-team-btn" class="btn">Change Team</button></li>

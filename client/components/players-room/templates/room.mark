@@ -1,8 +1,10 @@
-<ul class="table-view">
-    <li id="room-name" class="table-view-cell table-view-divider">
+<div class="panel panel-default">
+    <div class="panel-heading">
         {{roomName}}
         <button id="start-game-btn" class="btn btn-positive">Start Game</button>
-    </li>
-    <li id="red-team" class="table-view-cell table-view-divider">&nbsp;</li>
-    <li id="blue-team" class="table-view-cell table-view-divider">&nbsp;</li>
-</ul>
+    </div>
+    <ul id='players-room' class="list-group">
+        <li id="red-team" class="list-group-item">&nbsp;</li>
+        <li id="blue-team" class="list-group-item">&nbsp;</li>
+    </ul>
+</div>

@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test-win": "node node_modules/mocha/bin/_mocha tests/*.js",
+    "test-creator": "node node_modules/mocha/bin/_mocha tests/system/room-creator.js",
+    "test-joiner": "node node_modules/mocha/bin/_mocha tests/system/room-joiner.js",
     "test-unit-win": "node node_modules/mocha/bin/_mocha tests/unit/**/*.js"
   },
   "dependencies": {
@@ -16,7 +18,8 @@
     "request": "*",
     "should": "3.3.1",
     "socket.io": "1.1.0",
-    "socket.io-client": "*"
+    "socket.io-client": "*",
+    "webdriverio": "2.2.1"
   },
   "author": "",
   "license": "MIT"
