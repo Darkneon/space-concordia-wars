@@ -7,3 +7,5 @@
 <a id="begin" class="btn btn-positive">
     Begin
 </a>
+
+<div class="error">{{error-message}}</div>

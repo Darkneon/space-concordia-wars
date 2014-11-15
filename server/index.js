@@ -1,13 +1,14 @@
 /*jslint node: true */
 "use strict";
 
-var PORT = 3000;
+var PORT = process.env.PORT || 3000;
 
 /*Models and Services*/
 var Room = require('./models/Room.js');
 var PreGameServices = require('./services/pregame-services.js');
 var GameServices = require('./services/game-services.js');
 var RoomServices = require('./services/room-services.js');
+var PlayerServices = require('./services/player-services.js');
 
 
 /*Modules*/
@@ -22,6 +23,10 @@ var assert = require('assert');
 app.use(express.static(path.join(__dirname, '../client')));
 app.use(bodyParser.urlencoded());
 
+server.listen(PORT, function () {
+    console.log('And we are live on port %d', server.address().port);
+});
+
 var preGameServices = new PreGameServices({
     events: {
         onPlayerReadySend: function (error, room, playerID) {
@@ -35,29 +40,29 @@ var preGameServices = new PreGameServices({
     io: io
 });
 
-server.listen(PORT, function () {
-    console.log('And we are live on port %d', server.address().port);
-});
 
-var playerList = {};
+
 
 var gameServices = new GameServices({ io: io });
-var roomServices = new RoomServices({ io: io, playerList: playerList });
+var playerServices = new PlayerServices();
+var roomServices = new RoomServices({
+    io: io,
+    playerList: playerServices.getPlayersList(),
+    playerServices: playerServices
+});
 
 app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, '../client', 'index.html'));
 });
 
-// Leaving the app.get methods here for now for compatibility
-app.get('/room', function (req, res) {
-    res.json(roomServices.getRooms());
+app.get('/debug', function (req, res) {
+    res.json({
+        roomsTotal: roomServices.getRooms().length,
+        rooms: roomServices.getRooms(),
+        playersTotal: Object.keys(playerServices.getPlayersList()).length,
+        players: playerServices.getPlayersList()
+    })
 });
-
-
-app.get('/getRooms', function (req, res) {
-    res.json(roomServices.getRooms());
-});
-
 
 app.get('/getRoom/:id', function (req, res) {
     console.log(req.params.id);
@@ -67,7 +72,15 @@ app.get('/getRoom/:id', function (req, res) {
 io.sockets.on('connection', function (socket) {
     console.log('A socket connected!');
     console.log(socket.id);
-    
+
+    //-----------------------------------------------------------------------
+    // Player
+    //-----------------------------------------------------------------------
+    socket.on('registerNickname', function(msg) { playerServices.registerNickname(msg, socket); });
+
+    //-----------------------------------------------------------------------
+    // Rooms
+    //-----------------------------------------------------------------------
     socket.on('newRoom', function(msg) { roomServices.newRoom(msg, socket); });
     //TODO: update client code to use sockets and test out this code
     socket.on('joinRoom', function(msg) { roomServices.joinRoom(msg, socket); });
@@ -80,8 +93,11 @@ io.sockets.on('connection', function (socket) {
     socket.on('changeTeam', function(msg) { roomServices.changeTeam(msg, socket); });
     socket.on('disconnect', function() { roomServices.disconnect(socket); });
 
+    //-----------------------------------------------------------------------
+    // Games
+    //-----------------------------------------------------------------------
     socket.on('player-update', function (data) {
-        if(typeof playerList[socket.id] !== 'undefined') {
+        if(typeof playerServices.getPlayersList()[socket.id] !== 'undefined') {
             gameServices.processPlayerUpdate(data, socket.id, playerList);
         }
     });
@@ -93,9 +109,10 @@ io.sockets.on('connection', function (socket) {
    // });
 
     socket.on('game-player-ready', function(data) {
-        if(playerList[socket.id] != null){
-            var playerID = playerList[socket.id].nickname;
-            var roomID = playerList[socket.id].joinedRoom;
+        var playersList = playerServices.getPlayersList();
+        if(playersList[socket.id] != null){
+            var playerID = playersList[socket.id].nickname;
+            var roomID = playersList[socket.id].joinedRoom;
             preGameServices.setPlayerReady(roomServices.getRooms()[roomID], playerID);
         }
     });

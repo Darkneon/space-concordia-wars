@@ -28,3 +28,10 @@
     color: aliceblue;
     border: 1px solid #7C7C7C;
 }
+
+#nickname-screen .error {
+    color: red;
+    font-size: 25px;
+    font-weight: bold;
+    display: none;
+}

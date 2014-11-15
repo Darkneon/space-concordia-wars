@@ -46,6 +46,7 @@
 
             var nicknameScreen = new NicknameScreen({
                 debug: true,
+                socket: socket,
                 path: '/components/nickname-screen',
                 elements: {
                     content: '#nickname-screen',
@@ -61,13 +62,6 @@
                             content: '#new-room'
                         },
                         onNewRoomCreated: function(roomID, nickname) {
-                            $.get('/getRooms', {}, function(result){
-                                console.log(result);
-                                for(var i = 0; i < result.length; i++) {
-                                    console.log(result[i]);
-                                }
-                            }, 'json');
-
                             $.get('/getRoom/' + roomID, {}, function(result) {
                                 console.log(result);
                                 $('#join-room').hide();
@@ -85,7 +79,6 @@
                                 });
                             }, 'json');
                         }
-
                     });
 
                     var joinGameComponent = new JoinRoom({

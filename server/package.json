@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "body-parser": "1.8.1",
+    "core-util-is": "1.0.1",
     "express": "4.8.8",
     "mocha": "1.21.4",
     "path": "0.4.9",
