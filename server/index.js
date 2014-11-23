@@ -6,6 +6,7 @@ var PORT = process.env.PORT || 3000;
 /*Models and Services*/
 var Room = require('./models/Room.js');
 var PreGameServices = require('./services/pregame-services.js');
+var PostGameServices = require('./services/postgame-services.js');
 var GameServices = require('./services/game-services.js');
 var RoomServices = require('./services/room-services.js');
 var PlayerServices = require('./services/player-services.js');
@@ -40,10 +41,17 @@ var preGameServices = new PreGameServices({
     io: io
 });
 
+var postGameServices = new PostGameServices({
+    preGameService: preGameServices
+});
 
+var gameServices = new GameServices({
+    io: io,
+    events: {
+        onGameOverUpdate: postGameServices.startNextGame
+    }
+});
 
-
-var gameServices = new GameServices({ io: io });
 var playerServices = new PlayerServices();
 var roomServices = new RoomServices({
     io: io,
@@ -98,15 +106,9 @@ io.sockets.on('connection', function (socket) {
     //-----------------------------------------------------------------------
     socket.on('player-update', function (data) {
         if(typeof playerServices.getPlayersList()[socket.id] !== 'undefined') {
-            gameServices.processPlayerUpdate(data, socket.id, playerList);
+            gameServices.processPlayerUpdate(data, socket.id, playerServices.getPlayersList());
         }
     });
-
-   // socket.on('get-iri-level', function(data) {
-   //     var roomID = playerList[socket.id].joinedRoom;
-   //     rooms[roomID].iridescenceLevel = iridescenceServices.generatePlatforms();
-   //     io.to(roomID).emit('iri-level', rooms[roomID].iridescenceLevel);
-   // });
 
     socket.on('game-player-ready', function(data) {
         var playersList = playerServices.getPlayersList();

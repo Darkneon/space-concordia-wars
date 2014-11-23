@@ -7,7 +7,8 @@ var GameServices = function(options) {
     this.managers.iridescence = require('./games/iridescence-services.js');
     this.managers.invaders = require('./games/invaders-services.js');
     this.managers.tanks = require('./games/tanks-services.js');
-
+    
+    this.onGameOverUpdate = options.events.onGameOverUpdate;
 
 
    // this.socket = options.socket;
@@ -41,13 +42,17 @@ GameServices.prototype.processPlayerUpdate = function(data, playerId, playerList
         }
     }
 
-
     if (data) {
         if (allDead === Object.keys(playerList).length) {
             this.io.emit('game-over-update', {
                 highestJump: 'player1',
                 redScore: data.redScore,
                 blueScore: data.blueScore
+            });
+            this.onGameOverUpdate({
+                room: {
+                    id: playerList[playerId].joinedRoom
+                }
             });
         } else {
             this.io.emit('game-progress-update', data);
