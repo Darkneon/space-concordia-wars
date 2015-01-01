@@ -1,7 +1,7 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         {{roomName}}
-        <button id="start-game-btn" class="btn btn-positive">Start Game</button>
+        <button id="start-game-btn" class="btn btn-positive btn-xs pull-right">Start Game</button>
     </div>
     <ul id='players-room' class="list-group">
         <li id="red-team" class="list-group-item">&nbsp;</li>
