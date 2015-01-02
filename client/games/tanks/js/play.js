@@ -234,7 +234,7 @@ Game.Play.prototype = {
 
 
 
-        this.time = 60 * 2;
+        this.time = 2 * 2;
         this.timerText = game.add.text(game.world.centerX, 25, this.time, { font: "20px monospace", fill: "#fff", align: "center" });
         this.timerText.anchor.setTo(0.5, 0.5);
 
@@ -389,6 +389,9 @@ Game.Play.prototype = {
                 bulletSpeedY: -this.touchControl.speed.y
             };
 
+            if (this.time <= 0) {
+                updateData.status = 'dead';
+            }
             this.socket.emit('player-update', updateData);
         }
 
@@ -490,4 +493,4 @@ Game.Play.prototype = {
     }
 };
 
-//@ sourceURL=play.js
+//@ sourceURL=playTanks.js

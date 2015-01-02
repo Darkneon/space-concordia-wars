@@ -5,55 +5,69 @@ var GameServices = function(options) {
     this.managers = {};
 
     this.managers.iridescence = require('./games/iridescence-services.js');
-    this.managers.invaders = require('./games/invaders-services.js');
     this.managers.tanks = require('./games/tanks-services.js');
-    
-    this.onGameOverUpdate = options.events.onGameOverUpdate;
+    this.managers.podium = require('./games/podium-services.js');
 
-
-   // this.socket = options.socket;
     this.io = options.io;
+    this.inProgress = {};
 
-  //  this.events = {
-  //      onPlayerReadySend: options.events.onPlayerReadySend || NOOP,
-  //      onAllPlayersReadySend: options.events.onAllPlayersReadySend || NOOP,
-  //      onGameOverOrGameStart: options.events.onSend || NOOP
-  //  };
+    this.events = {
+        onPlayerReadySend: options.events.onPlayerReadySend || NOOP,
+        onAllPlayersReadySend: options.events.onAllPlayersReadySend || NOOP,
+        onGameOverOrGameStart: options.events.onSend || NOOP
+    };
 };
 
-//GameServices.prototype.setIridescenceLevel = function(room) {
-//    if(!room.iridescenceLevel) {
-//        room.iridescenceLevel = this.managers.iridescence.generatePlatforms();
-//    }
-//    this.io.to(room.id).emit({levels: room});
-//};
+GameServices.prototype.setPlayerReady = function(room, playerId) {
+    room.players[playerId].setReady();
+    this.events.onPlayerReadySend(null, room, playerId);
+    if(room.allPlayersReady()) {
+        this.events.onAllPlayersReadySend(null, room);
+    }
+};
 
-GameServices.prototype.processPlayerUpdate = function(data, playerId, playerList) {
+GameServices.prototype.startNextGame = function(room) {
+    if (this.inProgress[room.id]) {
+        return;
+    } else {
+        this.inProgress[room.id] = true;
+    }
+
+    var game = room.getNextGame();
+    if (game) {
+        var gamedata = {
+            extra: this.managers[game].init(),
+            currentGame: game
+        };
+
+        console.log('load-game', game);
+        this.io.to(room.id).emit('load-game', gamedata);
+    }
+//        var that = this;
+//        setTimeout(function () {
+//            that.preGameServices.startNextGame(room);
+//        }, 5000);
+
+    // else to some logging
+};
+
+GameServices.prototype.processPlayerUpdate = function(data, playerId, playerList, room) {
     var manager = this.managers[data.game] || this.managers.iridescence;
 
     var data = manager.processPlayerUpdate(data, playerId, playerList);
 
-    var allDead = 0;
+    var allDead = room.allPlayersDead();
 
-    for (var key in playerList) {
-        var player = playerList[key];
-        if (player.data && player.data.status === 'dead') {
-            allDead += 1;
-        }
-    }
-
+    console.log(JSON.stringify(room, undefined, 2));
     if (data) {
-        if (allDead === Object.keys(playerList).length) {
+        if (allDead) {
             this.io.emit('game-over-update', {
                 highestJump: 'player1',
                 redScore: data.redScore,
                 blueScore: data.blueScore
             });
-            this.onGameOverUpdate({
-                room: {
-                    id: playerList[playerId].joinedRoom
-                }
-            });
+            this.inProgress[room.id] = false;
+            this.startNextGame(room);
         } else {
             this.io.emit('game-progress-update', data);
         }

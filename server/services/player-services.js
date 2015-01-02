@@ -12,6 +12,11 @@ PlayerServices.prototype.getPlayersList = function() {
     return this.playersList;
 };
 
+PlayerServices.prototype.getPlayer = function(id) {
+    return this.playersList[id];
+};
+
+
 PlayerServices.prototype.registerNickname = function(msg, socket) {
     assert(msg && !coreutil.isNullOrUndefined(msg.nickname), 'Msg is missing nickname');
 

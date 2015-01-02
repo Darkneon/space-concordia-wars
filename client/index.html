@@ -153,11 +153,11 @@
                     },
                     tanks: {
                         constructor: Tanks,
-                        options: { commonPath: COMMON_PATH, path: '/games/tanks' }
+                        options: { socket: socket, commonPath: COMMON_PATH, path: '/games/tanks' }
                     },
-                    invaders: {
-                        constructor: Invaders,
-                        options: { commonPath: COMMON_PATH, path: '/games/invaders' }
+                    podium: {
+                        constructor: Podium,
+                        options: { commonPath: COMMON_PATH, path: '/games/podium' }
                     }
                 }
             });

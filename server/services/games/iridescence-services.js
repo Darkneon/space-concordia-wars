@@ -1,4 +1,5 @@
 var assert = require('assert');
+var AbstractGameServices = require('./abstract-game-services.js');
 
 var Platform = function(color, width, height, containsCoin, coinLocation){
     this.color = color;
@@ -18,7 +19,9 @@ var IridescenceServices = function (options) {
     //this.level = [];
 };
 
-IridescenceServices.prototype.generatePlatforms = function() {
+IridescenceServices.prototype = Object.create(AbstractGameServices.prototype);
+
+IridescenceServices.prototype.init = function() {
     var level = [];
     for(var i = 0; i < this.IRI_BASE_LEVEL_SIZE; i++){
         var height = Math.floor(Math.random()*(this.WINDOW_HEIGHT - 300 + 1) + 300) //part of the original code
@@ -69,7 +72,9 @@ IridescenceServices.prototype.processPlayerUpdate = function(data, playerId, pla
         var playerData = playerList[playerId].data || {};
         playerData.score = data.score;
         playerData.highestJump = data.highestJump;
-        playerData.status = data.status;
+        if (data.status === 'dead') {
+            playerList[playerId].setDead();
+        }
 
         playerList[playerId].data = playerData;
 

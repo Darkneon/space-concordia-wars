@@ -1,4 +1,5 @@
 var assert = require('assert');
+var Player = require('../models/Player.js');
 var Room = require('../models/Room.js');
 
 var RoomServices = function(options) {
@@ -23,11 +24,11 @@ RoomServices.prototype.newRoom = function(msg, socket) {
     var socketId = socket.id;
     var playerList = this.playerList;
     this.id += 1;
-    playerList[socketId] = new PlayerRecord(socket.id, playerNick);
+    playerList[socketId] = new Player(socket.id, playerNick);
     playerList[socketId].team = 'red';
 
     this.rooms[roomID] = new Room(roomID);
-    this.rooms[roomID].addPlayer(playerNick);
+    this.rooms[roomID].addPlayer(playerList[socketId]);
     playerList[socketId].joinedRoom = roomID;
 
     socket.join(roomID);
@@ -41,14 +42,14 @@ RoomServices.prototype.joinRoom = function(msg, socket) {
     var playerList = this.playerList;
     var rooms = this.rooms;
 
-    playerList[socket.id] = new PlayerRecord(socket.id, nickname);
+    playerList[socket.id] = new Player(socket.id, nickname);
 
     if (rooms[roomID]) {
         if (rooms[roomID].numOfJoinedPlayers < rooms[roomID].roomCapacity) {
             socket.join(roomID);
             playerList[socket.id].joinedRoom = roomID;
             playerList[socket.id].team = rooms[roomID].numOfJoinedPlayers % 2 === 0 ? 'red' : 'blue';
-            rooms[roomID].addPlayer(nickname);
+            rooms[roomID].addPlayer( playerList[socket.id]);
             socket.emit("roomJoined", msg); //What kind of confirmation method should we use?
             this.io.to(roomID).emit('roomChanged', rooms[roomID].players);
             updateGameList.call(this);
@@ -116,12 +117,6 @@ RoomServices.prototype.disconnect = function(socket) {
         delete playerList[socket.id];
     }
 };
-
-function PlayerRecord(id, nickname) {
-    this.id = id;
-    this.nickname = nickname;
-    this.joinedRoom = null;
-}
 
 function updateGameList() {
     this.io.sockets.emit(

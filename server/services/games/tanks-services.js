@@ -1,7 +1,15 @@
 var assert = require('assert');
+var AbstractGameServices = require('./abstract-game-services.js');
+
 
 var TanksServices = function (options) {
     options = options || {};
+};
+
+TanksServices.prototype = Object.create(AbstractGameServices.prototype);
+
+TanksServices.prototype.init = function () {
+
 };
 
 TanksServices.prototype.calculateFinalScore = function(room) {
@@ -31,10 +39,13 @@ TanksServices.prototype.processPlayerUpdate = function(data, playerId, playerLis
         playerData.positionX = data.positionX;
         playerData.positionY = data.positionY;
 
-        if (data.health <= 0) {
+        if (data.status === 'dead') {
+            playerList[playerId].setDead();
+        } else if (data.health <= 0) {
             playerData.dead = data.dead + 1 || 1;
             data.status = 'respawning';
         }
+
 
         playerData.status = data.status;
         playerData.turretAngle = data.turretAngle;

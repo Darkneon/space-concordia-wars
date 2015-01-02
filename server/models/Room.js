@@ -10,18 +10,18 @@ var Room = function (id) {
     this.roomCapacity = 8;
     this.numOfJoinedPlayers = 0;
     this.currentGameIndex = NOT_IN_GAME;
-    this.games = ['iridescence', 'tanks', 'snake', 'podium'];
+    this.games = ['iridescence', 'tanks', 'podium'];
     this.iridescenceLevel = [];
 
     //maybe add a gamestatus enum
 }
 
-Room.prototype.addPlayer = function (playerID) { //Add check for player, also the playerID -IS- the player nick, not a seperate ID
-    if (this.numOfJoinedPlayers <= this.roomCapacity && this.players[playerID] == null) {
-        this.players[playerID] = new Player(playerID);
+Room.prototype.addPlayer = function (player) { //Add check for player, also the playerID -IS- the player nick, not a seperate ID
+    if (this.numOfJoinedPlayers <= this.roomCapacity && this.players[player.id] == null) {
+        this.players[player.id] = player;
         this.numOfJoinedPlayers += 1;
         if(this.numOfJoinedPlayers == 1){
-            this.roomMaster = playerID;
+            this.roomMaster = player;
         }
         return true;
     }
@@ -40,13 +40,27 @@ Room.prototype.removePlayer = function (playerID) {
 Room.prototype.allPlayersReady = function () {
     for(var playerID in this.players){
         if(this.players.hasOwnProperty(playerID)){
-            if(this.players[playerID].isReady === false) {
+            if(this.players[playerID].status === Player.STATUS.NOT_READY) {
                 return false;
             }
         }
     }
+
     return true;
-}
+};
+
+Room.prototype.allPlayersDead = function () {
+    for(var playerID in this.players){
+        if(this.players.hasOwnProperty(playerID)){
+            if(this.players[playerID].status !== Player.STATUS.DEAD) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+};
+
 
 Room.prototype.getNextGame = function() {
     this.currentGameIndex += 1;

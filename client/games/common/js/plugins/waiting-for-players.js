@@ -8,6 +8,8 @@ Phaser.Plugin.WaitingForPlayers.prototype.constructor = Phaser.Plugin.WaitingFor
 Phaser.Plugin.WaitingForPlayers.prototype.init = function(options) {
     game.stage.backgroundColor = '#000';
 
+    options.socket.removeAllListeners('game-start');
+
     if (options.stars) {
         //Stars
         var smallStarsEmitter = game.add.emitter(game.world.centerX, game.world.centerY, 100);
@@ -115,13 +117,16 @@ Phaser.Plugin.WaitingForPlayers.prototype.init = function(options) {
         noise.animations.play('noiseloop');
     }
 
+    this.text = null;
     options.socket.on('game-start', function(){
         game.count = 5;
-        text = game.add.text(game.world.centerX, game.world.centerY, game.count, { font: "192px monospace", fill: "#ddd", align: "center" });
-        text.setShadow(1, 5, 'rgba(0,255,0,0.5)', 5);
-        text.anchor.setTo(0.5, 0.5);
+            this.text = game.add.text(game.world.centerX, game.world.centerY, game.count, { font: "192px monospace", fill: "#ddd", align: "center" });
+            this.text.setShadow(1, 5, 'rgba(0,255,0,0.5)', 5);
+            this.text.anchor.setTo(0.5, 0.5);
+            this.text.setText(game.count);
 
-        game.time.events.repeat(Phaser.Timer.SECOND * 1, 1, this.startCountdown, this);
+
+        game.time.events.repeat(Phaser.Timer.SECOND * 1, 0, this.startCountdown, this);
     }.bind(this));
 
 };
@@ -130,12 +135,16 @@ Phaser.Plugin.WaitingForPlayers.prototype.update = function () {};
 
 Phaser.Plugin.WaitingForPlayers.prototype.startCountdown = function () {
     game.count -= 1;
-
-    text.setText(game.count);
-
-    if (game.count === 0) {
+    console.log(game.context);
+    console.log(this.text);
+    console.log(this.text.context);
+    this.text.setText(game.count);
+    console.log(game.count);
+    if (game.count <= 0) {
         game.state.start('Play');
     } else {
-        game.time.events.repeat(Phaser.Timer.SECOND * 1, 1, this.startCountdown, this);
+        game.time.events.repeat(Phaser.Timer.SECOND * 1, 0, this.startCountdown, this);
     }
 };
+
+//@ sourceURL=waitingForPlayers.js

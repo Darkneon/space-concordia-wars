@@ -11,8 +11,5 @@ Game.Wait.prototype = {
         this.waitingForPlayers = this.game.plugins.add(Phaser.Plugin.WaitingForPlayers, { title: 'Tanks', stars: false, noise: false, socket: game.options.socket});
     },
       update: function() {
-        //    if (spaceKey.isDown) {
-                  game.state.start('Play');
-         //   }
       }
 };
