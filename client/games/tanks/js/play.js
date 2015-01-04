@@ -255,6 +255,7 @@ Game.Play.prototype = {
         this.respawningTime = 0;
         this.socket = game.options.socket;
         var that = this;
+
         this.socket.on('game-progress-update', function (data) {
 
             data.players.forEach(function(dataPlayer) {
@@ -392,9 +393,12 @@ Game.Play.prototype = {
             if (this.time <= 0) {
                 updateData.status = 'dead';
             }
-            this.socket.emit('player-update', updateData);
-        }
 
+            this.socket.emit('player-update', updateData);
+            if (this.time <= 0) {
+                game.state.start('Over');
+            }
+        }
     },
 
     bulletHitPlayer: function(tank, bullet) {

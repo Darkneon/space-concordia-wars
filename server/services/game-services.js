@@ -67,7 +67,12 @@ GameServices.prototype.processPlayerUpdate = function(data, playerId, playerList
                 blueScore: data.blueScore
             });
             this.inProgress[room.id] = false;
-            this.startNextGame(room);
+
+            var that = this;
+            setTimeout(function() {
+                that.startNextGame(room);
+            }, 5000);
+
         } else {
             this.io.emit('game-progress-update', data);
         }

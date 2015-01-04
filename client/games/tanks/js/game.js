@@ -12,6 +12,7 @@
         game.state.add('Load', Game.Load);
         game.state.add('Wait', Game.Wait);
         game.state.add('Play', Game.Play);
+        game.state.add('Over', Game.Over);
 
         game.state.start('Boot');
     };

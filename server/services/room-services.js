@@ -65,13 +65,12 @@ RoomServices.prototype.joinRoom = function(msg, socket) {
 RoomServices.prototype.changeTeam = function(msg, socket) {
     var rooms = this.rooms;
     var roomID = parseInt(msg.roomID, 10);
-    var playerID = msg.playerID;
 
     if (!rooms[roomID]) {
         socket.emit("error", {error: "Room not found"});
     }
 
-    var player = rooms[roomID].players[playerID] || null;
+    var player = rooms[roomID].players[socket.id] || null;
     if (!player) {
         socket.send(JSON.stringify({error: "Player not found"}));
     }
@@ -105,7 +104,7 @@ RoomServices.prototype.disconnect = function(socket) {
     if(playerList[socket.id] != null){
         if(playerList[socket.id].joinedRoom != null){
             var roomID = playerList[socket.id].joinedRoom;
-            rooms[roomID].removePlayer(playerList[socket.id].nickname);
+            rooms[roomID].removePlayer(playerList[socket.id]);
 
             if(rooms[roomID].numOfJoinedPlayers == 0) {
                 rooms.splice(roomID, 1); //TODO: find an efficient way to remove empty values
